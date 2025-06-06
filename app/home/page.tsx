@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { ColorToggle } from "../_components/theme/color-toggle";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { ModeToggle } from "../_components/theme/mode-toggle";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -45,15 +48,12 @@ export default function Home() {
     setLoading(null);
   }
 
-  if (!session) return <div>Please sign in to access this page.</div>;
-
   return (
-    <main className="w-full container flex mx-auto justify-center items-center flex-col gap-y-10 h-[800px]">
-      <div className="text-5xl">Welcome, {name}!</div>
+    <main className="w-full container flex mx-auto justify-center items-center flex-col gap-y-10 h-[800px] text-foreground relative">
+      <div className="text-5xl ">Welcome, {name}!</div>
 
       <div className="flex justify-center gap-x-5">
         <Button
-          variant="outline"
           onClick={() => recordTime("time-in")}
           className="cursor-pointer flex items-center justify-center w-32 h-12"
           disabled={loading === "time-in"}
@@ -73,7 +73,6 @@ export default function Home() {
         </Button>
 
         <Button
-          variant="outline"
           onClick={() => recordTime("time-out")}
           className="cursor-pointer flex items-center justify-center w-32 h-12"
           disabled={loading === "time-out"}
@@ -91,6 +90,23 @@ export default function Home() {
             "Time Out"
           )}
         </Button>
+      </div>
+      <div className="absolute bottom-0 left-0 flex items-center justify-between p-4 w-full">
+        <div className="flex items-center gap-2">
+          <p>Switch Theme:</p>
+          <ColorToggle />
+        </div>
+        <div className="flex items-center gap-4">
+          <HoverCard>
+            <HoverCardTrigger className="cursor-pointer">
+              <span className="text-sm">Help</span>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80">
+              <p className="text-sm">Click 'Time In' to log when you start work and 'Time Out' to log when you finish for the day.</p>
+            </HoverCardContent>
+          </HoverCard>
+          <ModeToggle />
+        </div>
       </div>
     </main>
   );

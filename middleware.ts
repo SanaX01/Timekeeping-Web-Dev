@@ -15,7 +15,7 @@ export function middleware(req: NextRequest) {
     }
   } else {
     // If user is NOT authenticated, redirect from /home to login page or root
-    if (url.pathname === "/home") {
+    if (url.pathname === "/home" || url.pathname === "/dashboard") {
       url.pathname = "/";
       return NextResponse.redirect(url);
     }
@@ -27,5 +27,5 @@ export function middleware(req: NextRequest) {
 
 // Configure matcher for the paths you want to protect
 export const config = {
-  matcher: ["/", "/login", "/home"],
+  matcher: ["/", "/login", "/home", "/dashboard"],
 };

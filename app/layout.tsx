@@ -4,6 +4,8 @@ import "./globals.css";
 import SessionWrapper from "./_components/SessionWrapper";
 import Navbar from "./_components/Navbar";
 import { Toaster } from "sonner";
+import { ColorThemeProvider } from "./_components/theme/color-provider"; // ✅ import your color provider
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,17 +28,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased dark font-space`}>
-        <SessionWrapper>
-          <Navbar />
-          {children}
-          <Toaster
-            position="bottom-right"
-            richColors
-            theme="dark"
-          />
-        </SessionWrapper>
+    <html
+      lang="en"
+      suppressHydrationWarning
+    >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased  font-space`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+        >
+          <ColorThemeProvider>
+            <SessionWrapper>
+              <Navbar />
+              {children}
+              <Toaster
+                position="bottom-right"
+                richColors
+                theme="dark"
+              />
+            </SessionWrapper>
+          </ColorThemeProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

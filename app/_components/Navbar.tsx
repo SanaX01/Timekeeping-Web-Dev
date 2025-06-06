@@ -11,10 +11,13 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { signOut, useSession } from "next-auth/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ColorToggle } from "./theme/color-toggle";
+
 
 export default function Navbar() {
   const { data: session, status } = useSession();
-
+  const user = session?.user;
   if (status === "loading") {
     return (
       <div className="flex w-full justify-center items-center h-[800px]">
@@ -39,9 +42,9 @@ export default function Navbar() {
   return (
     <NavigationMenu
       viewport={false}
-      className="w-full mx-auto container mt-5"
+      className="w-full mx-auto container mt-5 text-foreground"
     >
-      <NavigationMenuList>
+      <NavigationMenuList className="flex items-center">
         <NavigationMenuItem>
           <NavigationMenuLink
             asChild
@@ -60,7 +63,13 @@ export default function Navbar() {
           </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Profile</NavigationMenuTrigger>
+          <NavigationMenuTrigger className="flex items-center gap-2">
+            <Avatar className="h-5 w-5">
+              <AvatarImage src={user?.image ?? "https://github.com/shadcn.png"} />
+              <AvatarFallback>{user?.name?.charAt(0) ?? "U"}</AvatarFallback>
+            </Avatar>
+            <p>Profile</p>
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[200px] gap-4">
               <li>
@@ -78,18 +87,5 @@ export default function Navbar() {
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
-  );
-}
-
-function ListItem({ title, children, href, ...props }: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
-  return (
-    <li {...props}>
-      <NavigationMenuLink asChild>
-        <Link href={href}>
-          <div className="text-sm leading-none font-medium">{title}</div>
-          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">{children}</p>
-        </Link>
-      </NavigationMenuLink>
-    </li>
   );
 }

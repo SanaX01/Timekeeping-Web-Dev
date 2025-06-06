@@ -7,6 +7,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 export default function SheetDataViewer() {
   const { data: session, status } = useSession();
   const [data, setData] = useState<string[][]>([]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

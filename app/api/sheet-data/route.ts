@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   });
 
   const rows = response.data.values || [];
-  const filteredRows = rows.filter((row) => row[1] === email); // Email is in column B (index 1)
+  const filteredRows = rows.filter((row) => row[1] === email); 
 
   return NextResponse.json(filteredRows);
 }
