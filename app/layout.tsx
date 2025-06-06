@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "animate.css";
 import SessionWrapper from "./_components/SessionWrapper";
 import Navbar from "./_components/Navbar";
+import Footer from "./_components/Footer";
 import { Toaster } from "sonner";
 import { ColorThemeProvider } from "./_components/theme/color-provider"; // ✅ import your color provider
 import { ThemeProvider } from "next-themes";
@@ -32,7 +34,9 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
     >
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased  font-space`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased  font-space  bg-background text-foreground min-h-screen flex flex-col`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -47,6 +51,7 @@ export default function RootLayout({
                 richColors
                 theme="dark"
               />
+              <Footer />
             </SessionWrapper>
           </ColorThemeProvider>
         </ThemeProvider>

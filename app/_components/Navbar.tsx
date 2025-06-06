@@ -12,80 +12,76 @@ import {
 } from "@/components/ui/navigation-menu";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ColorToggle } from "./theme/color-toggle";
-
+import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const user = session?.user;
-  if (status === "loading") {
-    return (
-      <div className="flex w-full justify-center items-center h-[800px]">
-        <div className="dot-spinner">
-          <div className="dot-spinner__dot"></div>
-          <div className="dot-spinner__dot"></div>
-          <div className="dot-spinner__dot"></div>
-          <div className="dot-spinner__dot"></div>
-          <div className="dot-spinner__dot"></div>
-          <div className="dot-spinner__dot"></div>
-          <div className="dot-spinner__dot"></div>
-          <div className="dot-spinner__dot"></div>
-        </div>
-      </div>
-    ); // or a loading spinner
-  }
+ 
 
   if (!session) {
     return null; // don't render Navbar if not logged in
   }
 
   return (
-    <NavigationMenu
-      viewport={false}
-      className="w-full mx-auto container mt-5 text-foreground"
-    >
-      <NavigationMenuList className="flex items-center">
-        <NavigationMenuItem>
-          <NavigationMenuLink
-            asChild
-            className={navigationMenuTriggerStyle()}
-          >
-            <Link href="/home">Home</Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
+    <div className="absolute top-0 left-0 w-full z-50 bg-background ">
+      <NavigationMenu
+        viewport={false}
+        className="w-full mx-auto container text-foreground py-4 "
+      >
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              asChild
+              className={navigationMenuTriggerStyle()}
+            >
+              <Link
+                href="/home"
+                className="animate__animated animate__fadeIn delay-100"
+              >
+                Home
+              </Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuLink
-            asChild
-            className={navigationMenuTriggerStyle()}
-          >
-            <Link href="/dashboard">Dashboard</Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="flex items-center gap-2">
-            <Avatar className="h-5 w-5">
-              <AvatarImage src={user?.image ?? "https://github.com/shadcn.png"} />
-              <AvatarFallback>{user?.name?.charAt(0) ?? "U"}</AvatarFallback>
-            </Avatar>
-            <p>Profile</p>
-          </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[200px] gap-4">
-              <li>
-                <NavigationMenuLink asChild>
-                  <button
-                    className="w-full cursor-pointer text-start"
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              asChild
+              className={navigationMenuTriggerStyle()}
+            >
+              <Link
+                href="/dashboard"
+                className="animate__animated animate__fadeIn delay-200"
+              >
+                Dashboard
+              </Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className="flex items-center gap-2 animate__animated  animate__fadeIn delay-300">
+              <Avatar className="h-5 w-5">
+                <AvatarImage src={user?.image ?? "https://github.com/shadcn.png"} />
+                <AvatarFallback>{user?.name?.charAt(0) ?? "U"}</AvatarFallback>
+              </Avatar>
+              <p>Profile</p>
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[200px] gap-4">
+                <li>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full px-4 py-2 text-start hover:bg-accent cursor-pointer"
                     onClick={() => signOut()}
                   >
                     Logout
-                  </button>
-                </NavigationMenuLink>
-              </li>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+                  </Button>
+                </li>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+    </div>
   );
 }

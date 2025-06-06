@@ -4,15 +4,13 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { ColorToggle } from "../_components/theme/color-toggle";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { ModeToggle } from "../_components/theme/mode-toggle";
 
 export default function Home() {
   const { data: session } = useSession();
   const [alert, setAlert] = useState<{ status: string; message: string } | null>(null);
 
   const [name, setName] = useState("");
+  const [welcomeName, setWelcomeName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState<"time-in" | "time-out" | null>(null);
 
@@ -31,8 +29,13 @@ export default function Home() {
 
   useEffect(() => {
     if (session?.user) {
-      setName(session.user.name || "");
       setEmail(session.user.email || "");
+      setWelcomeName(session.user.name || "");
+      const emailToName: Record<string, string> = {
+        "grunting.jelly@auroramy.com": "Christian Jade Tolentino",
+        "van.gogh@auroramy.com": "Ralph Matthew De Leon",
+      };
+      setName(emailToName[session.user.email!] || "");
     }
   }, [session]);
 
@@ -49,8 +52,8 @@ export default function Home() {
   }
 
   return (
-    <main className="w-full container flex mx-auto justify-center items-center flex-col gap-y-10 h-[800px] text-foreground relative">
-      <div className="text-5xl ">Welcome, {name}!</div>
+    <main className="w-full container flex mx-auto justify-center items-center flex-col gap-y-10 flex-1 text-foreground">
+      <div className="text-5xl animate__animated animate__fadeIn">Welcome, {welcomeName}!</div>
 
       <div className="flex justify-center gap-x-5">
         <Button
@@ -90,23 +93,6 @@ export default function Home() {
             "Time Out"
           )}
         </Button>
-      </div>
-      <div className="absolute bottom-0 left-0 flex items-center justify-between p-4 w-full">
-        <div className="flex items-center gap-2">
-          <p>Switch Theme:</p>
-          <ColorToggle />
-        </div>
-        <div className="flex items-center gap-4">
-          <HoverCard>
-            <HoverCardTrigger className="cursor-pointer">
-              <span className="text-sm">Help</span>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80">
-              <p className="text-sm">Click 'Time In' to log when you start work and 'Time Out' to log when you finish for the day.</p>
-            </HoverCardContent>
-          </HoverCard>
-          <ModeToggle />
-        </div>
       </div>
     </main>
   );

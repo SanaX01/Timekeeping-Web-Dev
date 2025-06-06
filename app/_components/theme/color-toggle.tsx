@@ -9,13 +9,13 @@ export function ColorToggle() {
   const { color, setColor } = useColorTheme();
 
   return (
-    <div className="flex gap-2">
-      {themes.map((theme) => (
+    <div className="flex gap-2 flex-col md:flex-row  justify-center">
+      {themes.map((theme, index) => (
         <Button
           key={theme}
           variant={color === theme ? "default" : "outline"}
           onClick={() => setColor(theme)}
-          className="capitalize"
+          className={`capitalize animate__animated animate__bounceInUp delay-${index}00`}
           size="sm"
         >
           {theme}

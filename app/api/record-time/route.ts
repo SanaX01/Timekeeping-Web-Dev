@@ -5,11 +5,19 @@ import { NextRequest, NextResponse } from "next/server";
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
 const SHEET_NAME = "June"; // Make sure this matches your actual sheet name
 
+// Define allowed emails
+const ALLOWED_EMAILS = ["grunting.jelly@auroramy.com", "van.gogh@auroramy.com", "jason.ruben@auroramy.com"]; // Add more if needed
+
 export async function POST(req: NextRequest) {
   const { name, email, action } = await req.json();
 
   if (!name || !email || !action) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+  }
+
+  // 🔒 Check if email is allowed
+  if (!ALLOWED_EMAILS.includes(email.trim().toLowerCase())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
   const auth = new google.auth.GoogleAuth({
@@ -27,7 +35,6 @@ export async function POST(req: NextRequest) {
     month: "long",
     year: "numeric",
   });
-  // Output: Friday, 6 June 2025
   const formattedDate = datePH.replace(/^(\w+)\s/, "$1, ");
 
   const timePH = now.toLocaleTimeString("en-PH", {

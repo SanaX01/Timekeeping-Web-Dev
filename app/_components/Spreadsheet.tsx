@@ -27,7 +27,7 @@ export default function SheetDataViewer() {
 
   if (loading)
     return (
-      <div className="flex w-full justify-center items-center h-[800px]">
+      <div className="flex w-full justify-center items-center flex-1 h-full">
         <div className="dot-spinner">
           {[...Array(8)].map((_, i) => (
             <div
@@ -40,8 +40,8 @@ export default function SheetDataViewer() {
     );
 
   return (
-    <div className="p-4 w-full mx-auto container">
-      <h2 className="text-lg font-bold mb-2">Attendance Details</h2>
+    <div className="p-4 w-full mx-auto container my-16 flex-1 flex flex-col gap-y-10">
+      <h2 className="text-5xl font-bold mb-2 text-primary">Attendance Details</h2>
       <Table>
         <TableCaption>A list of your attendance.</TableCaption>
         <TableHeader>
