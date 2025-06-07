@@ -1,25 +1,26 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
+  const cookieName = process.env.NODE_ENV === "production" ? "__Secure-next-auth.session-token" : "next-auth.session-token";
+
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
+    cookieName,
   });
 
-  console.log("PROD token:", token);
+  console.log("PROD token:", token); // 👈 should now be the user token object
 
   const { pathname } = req.nextUrl;
 
-  // Redirect if logged in but going to /login or /
   if (token && (pathname === "/" || pathname === "/login")) {
     const url = req.nextUrl.clone();
     url.pathname = "/home";
     return NextResponse.redirect(url);
   }
 
-  // Protected routes
   const protectedPaths = ["/dashboard", "/home"];
   if (protectedPaths.some((path) => pathname.startsWith(path))) {
     if (!token) {
@@ -28,7 +29,6 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    // Only allow admins on /dashboard
     if (pathname.startsWith("/dashboard") && token.role !== "admin") {
       return NextResponse.rewrite(new URL("/403", req.url));
     }
