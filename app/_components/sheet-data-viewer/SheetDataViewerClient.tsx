@@ -1,33 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { MonthAttendance } from "./constants";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { MonthAttendance } from "../constants";
 
-export default function SheetDataViewer() {
-  const { data: session, status } = useSession();
+interface Props {
+  initialData: string[][];
+}
+
+export default function SheetDataViewerClient({ initialData }: Props) {
   const [data, setData] = useState<string[][]>([]);
   const [filteredData, setFilteredData] = useState<string[][]>([]);
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (status === "authenticated" && session?.user?.email) {
-      fetch(`/api/sheet-data`)
-        .then((res) => res.json())
-        .then((data) => {
-          setData(data);
-          setFilteredData(data); // set both full and filtered data
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Failed to fetch sheet data:", err);
-          setLoading(false);
-        });
-    }
-  }, [status, session?.user?.email]);
+    // Simulate fetching delay; replace with real async fetch if needed
+    const fetchData = async () => {
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate delay
+      setData(initialData);
+      setFilteredData(initialData);
+      setLoading(false);
+    };
+    fetchData();
+  }, [initialData]);
 
   useEffect(() => {
     const lower = filter.toLowerCase();
@@ -58,10 +56,9 @@ export default function SheetDataViewer() {
       <h2 className="text-5xl text-center">
         Month of <span className="underline underline-offset-8">{MonthAttendance}</span>
       </h2>
+
       <div className="flex justify-between items-center">
         <h3 className="text-4xl font-bold mb-2 text-primary">Attendance Details</h3>
-
-        {/* Filter Input */}
         <Input
           placeholder="Search by name or email..."
           value={filter}
@@ -69,6 +66,7 @@ export default function SheetDataViewer() {
           className="max-w-sm"
         />
       </div>
+
       <Table>
         <TableCaption className="mb-20">A list of your attendance.</TableCaption>
         <TableHeader>

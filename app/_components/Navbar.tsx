@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 export default function Navbar() {
   const { data: session, status } = useSession();
   const user = session?.user;
- 
 
   if (!session) {
     return null; // don't render Navbar if not logged in
@@ -43,20 +42,22 @@ export default function Navbar() {
               </Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
-
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link
-                href="/dashboard"
-                className="animate__animated animate__fadeIn delay-200"
+          {user?.role === "admin" ? (
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
               >
-                Dashboard
-              </Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
+                <Link
+                  href="/dashboard"
+                  className="animate__animated animate__fadeIn delay-200"
+                >
+                  Dashboard
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          ) : null}
+
           <NavigationMenuItem>
             <NavigationMenuTrigger className="flex items-center gap-2 animate__animated  animate__fadeIn delay-300">
               <Avatar className="h-5 w-5">

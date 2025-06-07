@@ -1,13 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { recordTime } from "../actions/recordTime";
+import { allowedUsers } from "../_components/constants";
+import { Skeleton } from "@/components/ui/skeleton";
+
+type ToastTypes = "success" | "info" | "warning" | "error" | "loading" | "default";
+
+type Alert = {
+  status: ToastTypes;
+  message: string;
+};
 
 export default function Home() {
   const { data: session } = useSession();
-  const [alert, setAlert] = useState<{ status: string; message: string } | null>(null);
+  const [alert, setAlert] = useState<Alert | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const [name, setName] = useState("");
   const [welcomeName, setWelcomeName] = useState("");
@@ -16,12 +27,16 @@ export default function Home() {
 
   useEffect(() => {
     if (alert) {
-      toast(alert.status, {
+      const toastFnMap: Record<ToastTypes, (msg: string, opts?: any) => void> = {
+        success: toast.success,
+        info: toast.info,
+        warning: toast.warning,
+        error: toast.error,
+        loading: toast.loading,
+        default: toast.info,
+      };
+      toastFnMap[alert.status](alert.status.charAt(0).toUpperCase() + alert.status.slice(1), {
         description: alert.message,
-        action: {
-          label: "Dismiss",
-          onClick: () => setAlert(null),
-        },
       });
       setAlert(null);
     }
@@ -31,35 +46,32 @@ export default function Home() {
     if (session?.user) {
       setEmail(session.user.email || "");
       setWelcomeName(session.user.name || "");
-      const emailToName: Record<string, string> = {
-        "grunting.jelly@auroramy.com": "Christian Jade Tolentino",
-        "van.gogh@auroramy.com": "Ralph Matthew De Leon",
-      };
-      setName(emailToName[session.user.email!] || "");
+      setName(session.user.email! in allowedUsers ? allowedUsers[session.user.email! as keyof typeof allowedUsers] : "");
     }
   }, [session]);
 
-  async function recordTime(action: "time-in" | "time-out") {
+  const handleRecordTime = (action: "time-in" | "time-out") => {
     setLoading(action);
-    const res = await fetch("/api/record-time", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, action }),
+    startTransition(async () => {
+      const result = await recordTime(name, email, action);
+      setAlert({ status: result.ok ? "success" : "error", message: result.message });
+      setLoading(null);
     });
-    const data = await res.json();
-    setAlert({ status: res.ok ? "Success" : "Error", message: data.message || data.error });
-    setLoading(null);
-  }
+  };
 
   return (
     <main className="w-full container flex mx-auto justify-center items-center flex-col gap-y-10 flex-1 text-foreground">
-      <div className="text-5xl animate__animated animate__fadeIn">Welcome, {welcomeName}!</div>
+      {welcomeName === "" ? (
+        <Skeleton className="h-[20px] w-[650px] rounded-full" />
+      ) : (
+        <div className="text-5xl animate__animated animate__fadeIn">Welcome, {welcomeName}!</div>
+      )}
 
       <div className="flex justify-center gap-x-5">
         <Button
-          onClick={() => recordTime("time-in")}
+          onClick={() => handleRecordTime("time-in")}
           className="cursor-pointer flex items-center justify-center w-32 h-12"
-          disabled={loading === "time-in"}
+          disabled={loading === "time-in" || isPending}
         >
           {loading === "time-in" ? (
             <div className="loader">
@@ -76,12 +88,12 @@ export default function Home() {
         </Button>
 
         <Button
-          onClick={() => recordTime("time-out")}
+          onClick={() => handleRecordTime("time-out")}
           className="cursor-pointer flex items-center justify-center w-32 h-12"
-          disabled={loading === "time-out"}
+          disabled={loading === "time-out" || isPending}
         >
           {loading === "time-out" ? (
-            <div className="loader ">
+            <div className="loader">
               {[...Array(12)].map((_, i) => (
                 <div
                   key={i}

@@ -5,7 +5,7 @@ import "animate.css";
 import SessionWrapper from "./_components/SessionWrapper";
 import Navbar from "./_components/Navbar";
 import Footer from "./_components/Footer";
-import { Toaster } from "sonner";
+import { ToasterProvider } from "./_components/theme/ToasterProvider";
 import { ColorThemeProvider } from "./_components/theme/color-provider"; // ✅ import your color provider
 import { ThemeProvider } from "next-themes";
 
@@ -34,9 +34,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
     >
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased  font-space  bg-background text-foreground min-h-screen flex flex-col`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased  font-space bg-background min-h-screen flex flex-col`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -46,11 +44,7 @@ export default function RootLayout({
             <SessionWrapper>
               <Navbar />
               {children}
-              <Toaster
-                position="bottom-right"
-                richColors
-                theme="dark"
-              />
+              <ToasterProvider />
               <Footer />
             </SessionWrapper>
           </ColorThemeProvider>

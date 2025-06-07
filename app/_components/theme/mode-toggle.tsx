@@ -20,7 +20,7 @@ export function ModeToggle() {
 
   return (
     <Button
-      variant="outline"
+      variant="default"
       size="icon"
       onClick={() => setTheme(next)}
       title={`Switch to ${next} mode`}

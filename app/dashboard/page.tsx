@@ -1,10 +1,10 @@
 import React from "react";
-import Spreadsheet from "../_components/Spreadsheet";
+import SheetDataWrapper from "../_components/sheet-data-viewer/SheetDataWrapper";
 
 export default function page() {
   return (
     <>
-      <Spreadsheet />
+      <SheetDataWrapper />
     </>
   );
 }

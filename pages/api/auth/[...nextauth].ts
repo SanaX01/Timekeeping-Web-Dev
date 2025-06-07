@@ -1,12 +1,5 @@
+// pages/api/auth/[...nextauth].ts
 import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import authOptions from "../../../lib/auth";
 
-export default NextAuth({
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
-  secret: process.env.NEXTAUTH_SECRET,
-});
+export default NextAuth(authOptions); // ✅ this must be a default function

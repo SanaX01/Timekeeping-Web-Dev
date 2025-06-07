@@ -300,3 +300,13 @@ export const quotes = [
     h: "\u003Cblockquote\u003E&ldquo;Learn to use your emotions to think, not think with your emotions.&rdquo; &mdash; \u003Cfooter\u003ERobert Kiyosaki\u003C/footer\u003E\u003C/blockquote\u003E",
   },
 ];
+
+export const MonthAttendance = "June";
+
+export const allowedUsers = {
+  "grunting.jelly@auroramy.com": "Christian Jade Tolentino",
+  "van.gogh@auroramy.com": "Ralph Matthew De Leon",
+  "jason.ruben@auroramy.com": "Jason Ruben",
+} as const;
+
+export const ALLOWED_EMAILS = Object.keys(allowedUsers);

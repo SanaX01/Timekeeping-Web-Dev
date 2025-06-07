@@ -2,18 +2,18 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-type ColorTheme = "red" | "yellow" | "orange" | "rose" | "violet";
+type ColorTheme = "default" | "red" | "yellow" | "orange" | "rose" | "violet" | "blue";
 
 const ColorThemeContext = createContext<{
   color: ColorTheme;
   setColor: (c: ColorTheme) => void;
 }>({
-  color: "red",
+  color: "default",
   setColor: () => {},
 });
 
 export function ColorThemeProvider({ children }: { children: React.ReactNode }) {
-  const [color, setColor] = useState<ColorTheme>("red");
+  const [color, setColor] = useState<ColorTheme>("default");
 
   useEffect(() => {
     if (typeof window !== "undefined") {

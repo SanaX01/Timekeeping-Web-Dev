@@ -1,23 +1,21 @@
 // app/api/record-time/route.ts
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
+import { MonthAttendance, ALLOWED_EMAILS } from "@/app/_components/constants";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
-const SHEET_NAME = "June"; // Make sure this matches your actual sheet name
-
-// Define allowed emails
-const ALLOWED_EMAILS = ["grunting.jelly@auroramy.com", "van.gogh@auroramy.com", "jason.ruben@auroramy.com"]; // Add more if needed
+const SHEET_NAME = MonthAttendance; // Make sure this matches your actual sheet name
 
 export async function POST(req: NextRequest) {
   const { name, email, action } = await req.json();
 
-  if (!name || !email || !action) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-  }
-
   // 🔒 Check if email is allowed
   if (!ALLOWED_EMAILS.includes(email.trim().toLowerCase())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
+  if (!name || !email || !action) {
+    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
   const auth = new google.auth.GoogleAuth({
