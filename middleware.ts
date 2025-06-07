@@ -17,14 +17,14 @@ export async function middleware(req: NextRequest) {
     });
 
     // Not logged in: redirect to sign-in
-    if (!token) {
+    if (!sessionToken) {
       const url = new URL("/api/auth/signin", req.url);
       url.searchParams.set("callbackUrl", encodeURI(req.url));
       return NextResponse.redirect(url);
     }
 
     // Not authorized: only admin can access /dashboard
-    if (token.role !== "admin") {
+    if (token?.role !== "admin") {
       const url = new URL("/403", req.url);
       return NextResponse.rewrite(url);
     }
