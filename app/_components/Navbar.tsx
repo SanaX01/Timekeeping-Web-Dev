@@ -23,7 +23,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="absolute top-0 left-0 w-full z-50 bg-background ">
+    <div className="fixed top-0 left-0 w-full z-50 bg-background border-b border-b-primary">
       <NavigationMenu
         viewport={false}
         className="w-full mx-auto container text-foreground py-4 "
@@ -57,7 +57,6 @@ export default function Navbar() {
               </NavigationMenuLink>
             </NavigationMenuItem>
           ) : null}
-
           <NavigationMenuItem>
             <NavigationMenuTrigger className="flex items-center gap-2 animate__animated  animate__fadeIn delay-300">
               <Avatar className="h-5 w-5">
@@ -73,7 +72,7 @@ export default function Navbar() {
                     variant="ghost"
                     size="sm"
                     className="w-full px-4 py-2 text-start hover:bg-accent cursor-pointer"
-                    onClick={() => signOut()}
+                    onClick={() => signOut({ callbackUrl: "/" })}
                   >
                     Logout
                   </Button>

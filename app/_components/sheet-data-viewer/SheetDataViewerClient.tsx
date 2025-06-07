@@ -52,7 +52,7 @@ export default function SheetDataViewerClient({ initialData }: Props) {
     );
 
   return (
-    <div className="p-4 w-full mx-auto container my-16 flex-1 flex flex-col gap-y-10">
+    <div className="p-4 w-full mx-auto container my-24 flex-1 flex flex-col gap-y-10">
       <h2 className="text-5xl text-center">
         Month of <span className="underline underline-offset-8">{MonthAttendance}</span>
       </h2>

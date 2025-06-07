@@ -3,6 +3,7 @@ import { ColorToggle } from "./theme/color-toggle";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ModeToggle } from "./theme/mode-toggle";
 import { quotes } from "./constants";
+import { Button } from "@/components/ui/button";
 
 export default async function Footer() {
   const randomIndex = Math.floor(Math.random() * quotes.length);
@@ -10,7 +11,7 @@ export default async function Footer() {
 
   return (
     <div className="fixed bottom-0 flex flex-col w-full bg-background/95">
-      <div className="flex justify-between items-end mb-2">
+      <div className="flex justify-between items-end my-1.5">
         <div className="text-xs ml-5 hidden md:flex">
           <blockquote>"{quote.q}"</blockquote>
         </div>
@@ -23,8 +24,13 @@ export default async function Footer() {
         </div>
         <div className="flex justify-between items-center relative gap-4">
           <HoverCard>
-            <HoverCardTrigger className="cursor-pointer">
-              <span className="text-sm">Web Developer Team</span>
+            <HoverCardTrigger asChild>
+              <Button
+                variant="link"
+                className="text-sm text-foreground"
+              >
+                Web Developer Team
+              </Button>
             </HoverCardTrigger>
             <HoverCardContent className="w-80 pointer-events-none">
               <p className="text-sm">Kabataan ang pag-asa ng bayan.</p>

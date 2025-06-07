@@ -11,8 +11,6 @@ export async function middleware(req: NextRequest) {
     cookieName,
   });
 
-  console.log("PROD token:", token); // 👈 should now be the user token object
-
   const { pathname } = req.nextUrl;
 
   if (token && (pathname === "/" || pathname === "/login")) {

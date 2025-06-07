@@ -1,4 +1,6 @@
 // app/api/record-time/route.ts
+import { getServerSession } from "next-auth/next";
+import authOptions from "@/lib/auth"; // ✅ correct path
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 import { MonthAttendance, ALLOWED_EMAILS } from "@/app/_components/constants";
@@ -7,7 +9,15 @@ const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
 const SHEET_NAME = MonthAttendance; // Make sure this matches your actual sheet name
 
 export async function POST(req: NextRequest) {
-  const { name, email, action } = await req.json();
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const email = session.user.email;
+  const name = session.user.name || ""; // fallback if name is not present
+  const { action } = await req.json(); // only allow action to be passed from client
 
   // 🔒 Check if email is allowed
   if (!ALLOWED_EMAILS.includes(email.trim().toLowerCase())) {
@@ -43,6 +53,26 @@ export async function POST(req: NextRequest) {
   });
 
   if (action === "time-in") {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: `${SHEET_NAME}!A:E`,
+    });
+
+    const rows = response.data.values || [];
+
+    const alreadyTimeIn = rows.some(([rowName, rowEmail, rowDate]) => {
+      return (
+        rowName?.trim().toLowerCase() === name.trim().toLowerCase() &&
+        rowEmail?.trim().toLowerCase() === email.trim().toLowerCase() &&
+        rowDate?.trim() === formattedDate.trim()
+      );
+    });
+
+    if (alreadyTimeIn) {
+      return NextResponse.json({ error: "Time-in already recorded for today." }, { status: 409 });
+    }
+
+    // Proceed to append new time-in
     await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
       range: `${SHEET_NAME}!A:E`,
