@@ -14,12 +14,14 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
+  // Redirect authenticated users away from / or /login
   if (token && (pathname === "/" || pathname === "/login")) {
     const url = req.nextUrl.clone();
     url.pathname = "/home";
     return NextResponse.redirect(url);
   }
 
+  // Protect dashboard and home routes
   const protectedPaths = ["/dashboard", "/home"];
   if (protectedPaths.some((path) => pathname.startsWith(path))) {
     if (!token) {
@@ -33,9 +35,19 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // ✅ Protect the API route /api/sheet-data
+  if (pathname.startsWith("/api/sheet-data")) {
+    const authHeader = req.headers.get("x-internal-secret");
+
+    if (authHeader !== process.env.INTERNAL_API_SECRET) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+  }
+
   return NextResponse.next();
 }
 
+// 👇 Update matcher to include the API route
 export const config = {
-  matcher: ["/", "/login", "/home", "/dashboard"],
+  matcher: ["/", "/login", "/home", "/dashboard", "/api/sheet-data/:path*"],
 };

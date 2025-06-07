@@ -1,6 +1,5 @@
-// components/sheet-data-viewer/SheetDataWrapper.tsx (Server Component)
 import { getServerSession } from "next-auth";
-import authOptions from "../../../lib/auth"; // adjust based on your auth setup
+import authOptions from "../../../lib/auth"; // adjust if needed
 import SheetDataViewerClient from "./SheetDataViewerClient";
 import { config } from "../../../config";
 
@@ -13,10 +12,14 @@ export default async function SheetDataWrapper() {
 
   const res = await fetch(`${config.BASE_URI}/api/sheet-data`, {
     headers: {
-      Cookie: "", // Optionally include auth headers or cookies if needed
+      "x-internal-secret": process.env.INTERNAL_API_SECRET!, // <-- Add this header
     },
-    cache: "no-store", // To prevent caching if needed
+    cache: "no-store",
   });
+
+  if (!res.ok) {
+    return <div className="h-screen flex items-center">Error fetching data: {res.status}</div>;
+  }
 
   const data: string[][] = await res.json();
 

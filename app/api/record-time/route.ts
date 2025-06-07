@@ -20,7 +20,6 @@ export async function POST(req: NextRequest) {
 
   // Parse the JSON body from request
   const { action } = await req.json();
-  console.log("action ==> ", action);
 
   // Check if the email is allowed
   if (!ALLOWED_EMAILS.includes(email.trim().toLowerCase())) {

@@ -3,6 +3,10 @@ import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 import { MonthAttendance } from "@/app/_components/constants";
 export async function GET(req: NextRequest) {
+  
+  if (process.env.NODE_ENV !== "development") {
+    return new Response("Not Found", { status: 404 });
+  }
 
   const auth = new google.auth.GoogleAuth({
     credentials: {
