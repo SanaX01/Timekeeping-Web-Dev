@@ -3,9 +3,15 @@ import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 import { MonthAttendance } from "@/app/_components/constants";
 export async function GET(req: NextRequest) {
-  
-  if (process.env.NODE_ENV !== "development") {
-    return new Response("Not Found", { status: 404 });
+  if (process.env.NODE_ENV === "development") {
+    // No auth check in dev, just proceed
+  } else {
+    // In production, check secret header
+    const secret = req.headers.get("x-internal-secret");
+
+    if (secret !== process.env.INTERNAL_API_SECRET) {
+      return new Response("Unauthorized", { status: 401 });
+    }
   }
 
   const auth = new google.auth.GoogleAuth({
