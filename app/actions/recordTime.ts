@@ -1,9 +1,8 @@
 "use server";
+import { config } from "../../config";
 
 export async function recordTime(name: string, email: string, action: "time-in" | "time-out") {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"; // fallback for local dev
-
-  const res = await fetch(`${baseUrl}/api/record-time`, {
+  const res = await fetch(`${config.BASE_URI}/api/record-time`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, email, action }),
