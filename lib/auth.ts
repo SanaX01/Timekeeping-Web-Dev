@@ -10,10 +10,11 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  useSecureCookies: process.env.NODE_ENV === "production",
   callbacks: {
     async jwt({ token, user }) {
       if (user?.email) {
-        token.role = user.email === "grunting.jelly@auroramy.com" || user.email === "jason.ruben@auroramy.com" ? "admin" : "user";
+        token.role = ["grunting.jelly@auroramy.com", "jason.ruben@auroramy.com"].includes(user.email) ? "admin" : "user";
       }
       return token;
     },
