@@ -1,10 +1,10 @@
-"use server";
 import { config } from "../../config";
 
 export async function recordTime(name: string, email: string, action: "time-in" | "time-out") {
   const res = await fetch(`${config.BASE_URI}/api/record-time`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include", // ✅ Ensure session cookie is sent
     body: JSON.stringify({ name, email, action }),
   });
 

@@ -1,14 +1,14 @@
-// app/api/record-time/route.ts
 import { getServerSession } from "next-auth/next";
-import authOptions from "@/lib/auth"; // ✅ correct path
+import authOptions from "@/lib/auth"; // your next-auth config
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 import { MonthAttendance, ALLOWED_EMAILS } from "@/app/_components/constants";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
-const SHEET_NAME = MonthAttendance; // Make sure this matches your actual sheet name
+const SHEET_NAME = MonthAttendance;
 
 export async function POST(req: NextRequest) {
+  // Get the session using NextRequest object - App Router style
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.email) {
@@ -16,10 +16,13 @@ export async function POST(req: NextRequest) {
   }
 
   const email = session.user.email;
-  const name = session.user.name || ""; // fallback if name is not present
-  const { action } = await req.json(); // only allow action to be passed from client
+  const name = session.user.name || ""; // fallback if no name
 
-  // 🔒 Check if email is allowed
+  // Parse the JSON body from request
+  const { action } = await req.json();
+  console.log("action ==> ", action);
+
+  // Check if the email is allowed
   if (!ALLOWED_EMAILS.includes(email.trim().toLowerCase())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
@@ -28,11 +31,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
+  // Setup Google Sheets API client
   const auth = new google.auth.GoogleAuth({
     credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY!),
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
-
   const sheets = google.sheets({ version: "v4", auth });
 
   const now = new Date();
@@ -72,7 +75,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Time-in already recorded for today." }, { status: 409 });
     }
 
-    // Proceed to append new time-in
     await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
       range: `${SHEET_NAME}!A:E`,
