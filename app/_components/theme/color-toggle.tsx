@@ -3,7 +3,7 @@
 import { useColorTheme } from "../../_components/theme/color-provider";
 import { Button } from "@/components/ui/button";
 
-const themes = ["default", "red", "yellow", "orange", "rose", "violet", "blue"] as const;
+const themes = ["default", "red", "yellow", "orange", "rose", "violet", "blue", "teal"] as const;
 
 export function ColorToggle() {
   const { color, setColor } = useColorTheme();

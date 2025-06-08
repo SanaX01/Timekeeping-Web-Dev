@@ -15,7 +15,7 @@ export default async function Footer() {
         <div className="text-xs ml-5 hidden md:flex">
           <blockquote>"{quote.q}"</blockquote>
         </div>
-        <div className="text-xs mr-5  hidden md:block tracking-widest">Note: You must Time In before you can Time Out</div>
+        <em className="text-xs mr-5  hidden md:block tracking-wider font-light">Note: You must Time In before you can Time Out</em>
       </div>
       <footer className=" flex items-center justify-between p-4 w-full   border-t border-border  flex-col md:flex-row ">
         <div className="hidden md:flex items-center gap-2  md:flex-row ">

@@ -10,46 +10,15 @@ interface Props {
 }
 
 export default function SheetDataViewerClient({ initialData }: Props) {
-  const [data, setData] = useState<string[][]>([]);
-  const [filteredData, setFilteredData] = useState<string[][]>([]);
+  const [data, setData] = useState(initialData);
   const [filter, setFilter] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate fetching delay; replace with real async fetch if needed
-    const fetchData = async () => {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // simulate delay
-      setData(initialData);
-      setFilteredData(initialData);
-      setLoading(false);
-    };
-    fetchData();
-  }, [initialData]);
+  const [filteredData, setFilteredData] = useState(initialData);
 
   useEffect(() => {
     const lower = filter.toLowerCase();
-    const filtered = data.filter(
-      (row) =>
-        row[0]?.toLowerCase().includes(lower) || // Name
-        row[1]?.toLowerCase().includes(lower) // Email
-    );
+    const filtered = data.filter((row) => row[0]?.toLowerCase().includes(lower) || row[1]?.toLowerCase().includes(lower));
     setFilteredData(filtered);
   }, [filter, data]);
-
-  if (loading)
-    return (
-      <div className="flex w-full justify-center items-center flex-1 h-full">
-        <div className="dot-spinner">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className="dot-spinner__dot"
-            ></div>
-          ))}
-        </div>
-      </div>
-    );
 
   return (
     <div className="p-4 w-full mx-auto container my-24 flex-1 flex flex-col gap-y-10">

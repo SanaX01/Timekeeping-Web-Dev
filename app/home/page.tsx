@@ -64,7 +64,7 @@ export default function Home() {
       {welcomeName === "" ? (
         <Skeleton className="h-[20px] w-[650px] rounded-full" />
       ) : (
-        <div className="text-5xl animate__animated animate__fadeIn">Welcome, {welcomeName}!</div>
+        <h1 className="text-5xl animate__animated animate__fadeIn">Welcome, {welcomeName}!</h1>
       )}
 
       <div className="flex justify-center gap-x-5">

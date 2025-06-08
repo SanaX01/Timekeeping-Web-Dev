@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-type ColorTheme = "default" | "red" | "yellow" | "orange" | "rose" | "violet" | "blue";
+type ColorTheme = "default" | "red" | "yellow" | "orange" | "rose" | "violet" | "blue" | "teal";
 
 const ColorThemeContext = createContext<{
   color: ColorTheme;
