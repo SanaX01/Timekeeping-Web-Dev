@@ -307,6 +307,12 @@ export const allowedUsers = {
   "grunting.jelly@auroramy.com": "Christian Jade Tolentino",
   "van.gogh@auroramy.com": "Ralph Matthew De Leon",
   "jason.ruben@auroramy.com": "Jason Ruben",
+  "micro.nomix@auroramy.com": "Mark Renier Mercado",
+  "lost.robin@auroramy.com": "Joshua Diaz",
+  "erikson.cruz@auroramy.com": "Erikson Cruz",
+  "shadow.spectre@auroramy.com": "Scheidj Bleu Villados",
+  "aaron.prellegera@auroramy.com": "Aaron Prellegera",
+  "json.ray@auroramy.com": "Kevin Divinagracia",
 } as const;
 
 export const ALLOWED_EMAILS = Object.keys(allowedUsers);
