@@ -2,10 +2,10 @@ import { getServerSession } from "next-auth/next";
 import authOptions from "@/lib/auth"; // your next-auth config
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
-import { MonthAttendance, ALLOWED_EMAILS, allowedUsers } from "@/app/_components/constants";
+import { YearAttendance, ALLOWED_EMAILS, allowedUsers } from "@/app/_components/constants";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
-const SHEET_NAME = MonthAttendance;
+const SHEET_NAME = YearAttendance;
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);

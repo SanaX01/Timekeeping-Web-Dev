@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { MonthAttendance } from "../constants";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+import { months } from "../constants";
+import { YearAttendance } from "../constants";
 
 interface Props {
   initialData: string[][];
@@ -12,28 +15,60 @@ interface Props {
 export default function SheetDataViewerClient({ initialData }: Props) {
   const [data, setData] = useState(initialData);
   const [filter, setFilter] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("All");
   const [filteredData, setFilteredData] = useState(initialData);
 
   useEffect(() => {
     const lower = filter.toLowerCase();
-    const filtered = data.filter((row) => row[0]?.toLowerCase().includes(lower) || row[1]?.toLowerCase().includes(lower));
+
+    const filtered = data.filter((row) => {
+      const nameMatch = row[0]?.toLowerCase().includes(lower);
+      const emailMatch = row[1]?.toLowerCase().includes(lower);
+
+      const date = new Date(row[2]);
+      const monthMatch = selectedMonth === "All" || date.toLocaleString("default", { month: "long" }) === selectedMonth;
+
+      return (nameMatch || emailMatch) && monthMatch;
+    });
+
     setFilteredData(filtered);
-  }, [filter, data]);
+  }, [filter, selectedMonth, data]);
 
   return (
     <div className="p-4 w-full mx-auto container my-24 flex-1 flex flex-col gap-y-10">
       <h2 className="text-5xl text-center">
-        Month of <span className="underline underline-offset-8">{MonthAttendance}</span>
+        Year of <span className="underline underline-offset-8">{YearAttendance}</span>
       </h2>
 
-      <div className="flex justify-between items-center">
-        <h3 className="text-4xl font-bold mb-2 text-primary">Attendance Details</h3>
-        <Input
-          placeholder="Search by name or email..."
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="max-w-sm"
-        />
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h3 className="text-4xl font-bold text-primary">Attendance Details</h3>
+
+        <div className="flex gap-2">
+          <Input
+            placeholder="Search by name or email..."
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="max-w-sm"
+          />
+          <Select
+            value={selectedMonth}
+            onValueChange={setSelectedMonth}
+          >
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Select month" />
+            </SelectTrigger>
+            <SelectContent>
+              {months.map((month) => (
+                <SelectItem
+                  key={month}
+                  value={month}
+                >
+                  {month}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <Table>

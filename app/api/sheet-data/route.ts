@@ -1,10 +1,12 @@
 // app/api/sheet-data/route.ts
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
-import { MonthAttendance } from "@/app/_components/constants";
+import { YearAttendance } from "@/app/_components/constants";
 export async function GET(req: NextRequest) {
   if (process.env.NODE_ENV === "development") {
+    // No auth check in dev, just proceed
   } else {
+    // In production, check secret header
     const secret = req.headers.get("x-internal-secret");
 
     if (secret !== process.env.INTERNAL_API_SECRET) {
@@ -23,7 +25,7 @@ export async function GET(req: NextRequest) {
   const sheets = google.sheets({ version: "v4", auth });
 
   const spreadsheetId = process.env.GOOGLE_SHEET_ID;
-  const range = `${MonthAttendance}!A2:E`;
+  const range = `${YearAttendance}!A2:E`;
 
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,

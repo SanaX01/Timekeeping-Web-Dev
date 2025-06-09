@@ -301,7 +301,7 @@ export const quotes = [
   },
 ];
 
-export const MonthAttendance = "June";
+export const YearAttendance = "2025";
 
 export const allowedUsers = {
   "grunting.jelly@auroramy.com": "AHN01345",
@@ -314,5 +314,21 @@ export const allowedUsers = {
   "aaron.prellegera@auroramy.com": "AHNV01465",
   "json.ray@auroramy.com": "AHNV01793",
 } as const;
+
+export const months = [
+  "All",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 export const ALLOWED_EMAILS = Object.keys(allowedUsers);
