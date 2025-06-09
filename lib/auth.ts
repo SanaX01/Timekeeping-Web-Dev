@@ -8,9 +8,9 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET, // ✅ required
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt", // ✅ required
+    strategy: "jwt",
   },
   useSecureCookies: process.env.NODE_ENV === "production",
   callbacks: {

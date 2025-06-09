@@ -1,7 +1,6 @@
 // app/api/sheet-data/route.ts
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
-import { MonthAttendance } from "@/app/_components/constants";
 export async function GET(req: NextRequest) {
   if (process.env.NODE_ENV === "development") {
   } else {
@@ -10,6 +9,11 @@ export async function GET(req: NextRequest) {
     if (secret !== process.env.INTERNAL_API_SECRET) {
       return new Response("Unauthorized", { status: 401 });
     }
+  }
+
+  const email = req.nextUrl.searchParams.get("email");
+  if (!email) {
+    return new Response("Missing email", { status: 400 });
   }
 
   const auth = new google.auth.GoogleAuth({
@@ -23,7 +27,7 @@ export async function GET(req: NextRequest) {
   const sheets = google.sheets({ version: "v4", auth });
 
   const spreadsheetId = process.env.GOOGLE_SHEET_ID;
-  const range = `${MonthAttendance}!A2:E`;
+  const range = "LeaveBalance!A3:F";
 
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
@@ -31,7 +35,7 @@ export async function GET(req: NextRequest) {
   });
 
   const rows = response.data.values || [];
-  // const filteredRows = rows.filter((row) => row[1] === email);
+  const filteredRows = rows.filter((row) => row[0] === email);
 
-  return NextResponse.json(rows);
+  return NextResponse.json(filteredRows);
 }

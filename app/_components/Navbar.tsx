@@ -14,12 +14,16 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import SignOutButton from "./SignOutButton";
+import LeaveBalanceModal from "./LeaveBalanceModal";
+import { getLeaveBalanceByEmail } from "@/lib/getLeaveBalance";
 
 export default async function Navbar() {
   const session = await getServerSession(authOptions);
   const user = session?.user;
 
   if (!session) return null;
+
+  const leaveData = await getLeaveBalanceByEmail(user?.email as string);
 
   return (
     <div className="fixed top-0 left-0 w-full z-50 bg-background border-b border-b-primary">
@@ -36,7 +40,14 @@ export default async function Navbar() {
               <Link href="/home">Home</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
-
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              asChild
+              className={navigationMenuTriggerStyle()}
+            >
+              <Link href="/announcements">Announcements</Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
           {user?.role === "admin" && (
             <NavigationMenuItem>
               <NavigationMenuLink
@@ -51,13 +62,16 @@ export default async function Navbar() {
           <NavigationMenuItem>
             <NavigationMenuTrigger className="flex items-center gap-2">
               <Avatar className="h-5 w-5">
-                <AvatarImage src={user?.image ?? "https://github.com/shadcn.png"} />
+                <AvatarImage src={user?.image} />
                 <AvatarFallback>{user?.name?.charAt(0) ?? "U"}</AvatarFallback>
               </Avatar>
               <p>Profile</p>
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[200px] gap-4">
+                <li>
+                  <LeaveBalanceModal leaveData={leaveData} />
+                </li>
                 <li>
                   <SignOutButton />
                 </li>

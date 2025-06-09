@@ -304,15 +304,15 @@ export const quotes = [
 export const MonthAttendance = "June";
 
 export const allowedUsers = {
-  "grunting.jelly@auroramy.com": "Christian Jade Tolentino",
-  "van.gogh@auroramy.com": "Ralph Matthew De Leon",
-  "jason.ruben@auroramy.com": "Jason Ruben",
-  "micro.nomix@auroramy.com": "Mark Renier Mercado",
-  "lost.robin@auroramy.com": "Joshua Diaz",
-  "erikson.cruz@auroramy.com": "Erikson Cruz",
-  "shadow.spectre@auroramy.com": "Scheidj Bleu Villados",
-  "aaron.prellegera@auroramy.com": "Aaron Prellegera",
-  "json.ray@auroramy.com": "Kevin Divinagracia",
+  "grunting.jelly@auroramy.com": "AHN01345",
+  "van.gogh@auroramy.com": "AHNV02245",
+  "jason.ruben@auroramy.com": "AHNV00653",
+  "micro.nomix@auroramy.com": "AHNV01807",
+  "lost.robin@auroramy.com": "AHNV01185",
+  "erikson.cruz@auroramy.com": "AHNV00481",
+  "shadow.spectre@auroramy.com": "AHNV01346",
+  "aaron.prellegera@auroramy.com": "AHNV01465",
+  "json.ray@auroramy.com": "AHNV01793",
 } as const;
 
 export const ALLOWED_EMAILS = Object.keys(allowedUsers);

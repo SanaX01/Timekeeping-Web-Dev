@@ -16,7 +16,7 @@ export function ColorToggle() {
           variant={color === theme ? "default" : "outline"}
           onClick={() => setColor(theme)}
           className="capitalize animate__animated animate__bounceInUp "
-          style={{ animationDelay: `${index * 0.2}s` }} // Adjust 0.2s as needed
+          style={{ animationDelay: `${index * 0.2}s` }} 
           size="sm"
         >
           {theme}

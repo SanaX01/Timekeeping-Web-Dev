@@ -19,7 +19,7 @@ export default function SheetDataViewer() {
         .then((res) => res.json())
         .then((data) => {
           setData(data);
-          setFilteredData(data); // set both full and filtered data
+          setFilteredData(data); 
           setLoading(false);
         })
         .catch((err) => {
@@ -61,7 +61,7 @@ export default function SheetDataViewer() {
       <div className="flex justify-between items-center">
         <h3 className="text-4xl font-bold mb-2 text-primary">Attendance Details</h3>
 
-        {/* Filter Input */}
+       
         <Input
           placeholder="Search by name or email..."
           value={filter}

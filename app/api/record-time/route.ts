@@ -8,7 +8,6 @@ const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
 const SHEET_NAME = MonthAttendance;
 
 export async function POST(req: NextRequest) {
-  // Get the session using NextRequest object - App Router style
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.email) {
@@ -18,10 +17,8 @@ export async function POST(req: NextRequest) {
   const email = session.user.email.toLowerCase();
   const name = (allowedUsers as Record<string, string>)[email] || session.user.name || "";
 
-  // Parse the JSON body from request
   const { action } = await req.json();
 
-  // Check if the email is allowed
   if (!ALLOWED_EMAILS.includes(email.trim().toLowerCase())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
@@ -30,7 +27,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
-  // Setup Google Sheets API client
   const auth = new google.auth.GoogleAuth({
     credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY!),
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
