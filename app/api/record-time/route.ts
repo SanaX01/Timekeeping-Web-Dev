@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import authOptions from "@/lib/auth"; // your next-auth config
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
-import { MonthAttendance, ALLOWED_EMAILS } from "@/app/_components/constants";
+import { MonthAttendance, ALLOWED_EMAILS, allowedUsers } from "@/app/_components/constants";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
 const SHEET_NAME = MonthAttendance;
@@ -15,8 +15,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const email = session.user.email;
-  const name = session.user.name || ""; // fallback if no name
+  const email = session.user.email.toLowerCase();
+  const name = (allowedUsers as Record<string, string>)[email] || session.user.name || "";
 
   // Parse the JSON body from request
   const { action } = await req.json();
