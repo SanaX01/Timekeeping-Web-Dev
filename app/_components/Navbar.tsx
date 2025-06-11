@@ -26,12 +26,12 @@ export default async function Navbar() {
   const leaveData = await getLeaveBalanceByEmail(user?.email as string);
 
   return (
-    <div className="fixed top-0 left-0 w-full z-50 bg-background border-b border-b-primary">
+    <div className="fixed top-0 left-0 w-full z-50 bg-background border-b border-b-primary ">
       <NavigationMenu
         viewport={false}
         className="w-full mx-auto container text-foreground py-4"
       >
-        <NavigationMenuList>
+        <NavigationMenuList className="animate__animated animate__fadeInDown">
           <NavigationMenuItem>
             <NavigationMenuLink
               asChild

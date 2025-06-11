@@ -39,28 +39,28 @@ export default async function Statistics() {
   const overtimeToday = getOvertimeToday(filteredData);
 
   return (
-    <div className="absolute left-0 top-0 w-full py-6">
-      <div className="grid grid-cols-4  gap-4">
-        <div className="leading-none text-start border-x border-primary pl-2">
+    <div className="absolute left-0 top-0 w-full py-6 px-5 md:px-0 overflow-hidden">
+      <div className="grid md:grid-cols-4 grid-cols-1 gap-4 text-center">
+        <div className="leading-none md:text-start md:border-l-2 border-primary pl-2 animate__animated animate__fadeInLeft delay-700">
           <p className="font-semibold">Earliest Time In in {monthName}</p>
           <p className="text-sm text-muted-foreground">
             {!earliestTimeInThisMonth ? "No entries found." : `On ${earliestTimeInThisMonth.date} at ${earliestTimeInThisMonth.time}`}
           </p>
         </div>
 
-        <div className="leading-none text-start">
+        <div className="leading-none md:text-start md:border-l-2 border-primary pl-2 animate__animated animate__fadeInLeftBig delay-300">
           <p className="font-semibold">Latest Time Out</p>
           <p className="text-sm text-muted-foreground">
             {latestTimeOut?.[4] ? `On ${latestTimeOut[2]} at ${latestTimeOut[4]}` : "No entries found."}
           </p>
         </div>
 
-        <div className="leading-none text-end">
+        <div className="leading-none md:text-end md:border-r-2 border-primary pr-2 animate__animated animate__fadeInRightBig delay-300">
           <p className="font-semibold">Total Overtime in {monthName}</p>
           <p className="text-sm text-muted-foreground">{totalOvertime > 0 ? `${totalOvertime} hours` : "No overtime this month"}</p>
         </div>
 
-        <div className="leading-none text-end border-x border-primary pr-2">
+        <div className="leading-none md:text-end md:border-r-2 border-primary pr-2 animate__animated animate__fadeInRight delay-700">
           <p className="font-semibold">Overtime Today</p>
           <p className="text-sm text-muted-foreground">{overtimeToday > 0 ? `${overtimeToday} hours` : "No overtime today"}</p>
         </div>
