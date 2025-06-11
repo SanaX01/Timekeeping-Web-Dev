@@ -3,7 +3,7 @@
 import { useColorTheme } from "../../_components/theme/color-provider";
 import { Button } from "@/components/ui/button";
 
-const themes = ["default", "red", "yellow", "orange", "rose", "violet", "blue", "teal"] as const;
+const themes = ["default", "red", "yellow", "orange", "rose", "violet", "blue", "teal", "green"] as const;
 
 export function ColorToggle() {
   const { color, setColor } = useColorTheme();
@@ -16,7 +16,7 @@ export function ColorToggle() {
           variant={color === theme ? "default" : "outline"}
           onClick={() => setColor(theme)}
           className="capitalize animate__animated animate__bounceInUp "
-          style={{ animationDelay: `${index * 0.2}s` }} 
+          style={{ animationDelay: `${index * 0.2}s` }}
           size="sm"
         >
           {theme}
