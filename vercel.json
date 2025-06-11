@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/api/auto-time-in",
-      "schedule": "0 19 * * *"
+      "schedule": "25 18 * * *"
     }
   ]
 }
