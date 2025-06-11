@@ -8,6 +8,7 @@ import Footer from "./_components/Footer";
 import { ToasterProvider } from "./_components/theme/ToasterProvider";
 import { ColorThemeProvider } from "./_components/theme/color-provider"; // ✅ import your color provider
 import { ThemeProvider } from "next-themes";
+import InspectDisable from "./_components/InspectDisable";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default function RootLayout({
             </SessionWrapper>
           </ColorThemeProvider>
         </ThemeProvider>
+        <InspectDisable />
       </body>
     </html>
   );

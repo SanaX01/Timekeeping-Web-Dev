@@ -51,6 +51,46 @@ export default function Welcome() {
     }
   }, [session]);
 
+  // useEffect(() => {
+  //   const now = new Date();
+
+  //   // Convert to PH time manually (UTC+8)
+  //   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  //   const phNow = new Date(utc + 8 * 60 * 60 * 1000);
+
+  //   const currentDateString = phNow.toDateString();
+  //   const hasTimedInToday = localStorage.getItem("hasTimedInToday");
+
+  //   if (!name || !email || hasTimedInToday === currentDateString) return;
+
+  //   // === Customizable Window ===
+  //   const START_HOUR = 6;
+  //   const START_MINUTE = 0;
+  //   const END_HOUR = 8;
+  //   const END_MINUTE = 59;
+
+  //   const startTime = new Date(phNow);
+  //   startTime.setHours(START_HOUR, START_MINUTE, 0, 0);
+
+  //   const endTime = new Date(phNow);
+  //   endTime.setHours(END_HOUR, END_MINUTE, 0, 0);
+
+  //   const randomTime = new Date(startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime()));
+
+  //   if (phNow >= startTime && phNow <= endTime) {
+  //     const delay = randomTime.getTime() - phNow.getTime();
+
+  //     if (delay > 0) {
+  //       const timeout = setTimeout(() => {
+  //         handleRecordTime("time-in");
+  //         localStorage.setItem("hasTimedInToday", currentDateString);
+  //       }, delay);
+
+  //       return () => clearTimeout(timeout);
+  //     }
+  //   }
+  // }, [name, email]);
+
   const handleRecordTime = (action: "time-in" | "time-out") => {
     setLoading(action);
     startTransition(async () => {
