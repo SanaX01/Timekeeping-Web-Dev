@@ -61,12 +61,13 @@ export default function Welcome() {
   };
   return (
     <>
-      {welcomeName === "" ? (
-        <Skeleton className="h-[20px] w-[650px] rounded-full" />
-      ) : (
-        <h1 className="text-5xl animate__animated animate__fadeIn text-center">Welcome, {welcomeName}!</h1>
-      )}
-
+      <div className="h-[48px] flex items-end">
+        {welcomeName === "" ? (
+          <Skeleton className="h-[20px] w-[650px] rounded-full" />
+        ) : (
+          <h1 className="text-5xl animate__animated animate__fadeIn text-center">Welcome, {welcomeName}!</h1>
+        )}
+      </div>
       <div className="flex justify-center gap-x-5">
         <Button
           onClick={() => handleRecordTime("time-in")}

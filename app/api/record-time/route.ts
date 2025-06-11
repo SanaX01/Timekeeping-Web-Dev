@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ message: "Time In recorded!" });
+    return NextResponse.json({ message: "Time-in at " + timePH + " recorded!" });
   }
 
   if (action === "time-out") {
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
           },
         });
 
-        return NextResponse.json({ message: "Time Out recorded!" }, { status: 200 });
+        return NextResponse.json({ message: "Time-out at " + timePH + " recorded!" }, { status: 200 });
       }
     }
 

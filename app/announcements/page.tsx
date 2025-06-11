@@ -42,12 +42,6 @@ const announcements = [
     content: "Please welcome our new developers joining this month!",
     date: "June 1, 2025",
   },
-  {
-    id: 7,
-    title: "Team Expansion",
-    content: "Please welcome our new developers joining this month!",
-    date: "June 1, 2025",
-  },
 ];
 
 export default function AnnouncementPage() {
