@@ -7,8 +7,13 @@ import { Button } from "@/components/ui/button";
 
 function getTodayHoliday() {
   const today = new Date();
-  const day = today.getDate();
-  const month = today.toLocaleString("default", { month: "long" });
+
+  const day = parseInt(today.toLocaleString("en-PH", { day: "numeric", timeZone: "Asia/Manila" }));
+
+  const month = today.toLocaleString("en-PH", {
+    month: "long",
+    timeZone: "Asia/Manila",
+  });
 
   const formattedDate = `${day}${getDaySuffix(day)} ${month}`;
 
