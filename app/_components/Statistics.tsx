@@ -37,7 +37,6 @@ export default async function Statistics() {
   const earliestTimeInThisMonth = getEarliestTimeInThisMonth(filteredData);
   const totalOvertime = getTotalOvertimeThisMonth(filteredData);
   const overtimeToday = getOvertimeToday(filteredData);
-  console.log("overtimeToday ==> ", overtimeToday);
 
   return (
     <div className="absolute left-0 top-0 w-full py-6">

@@ -1,7 +1,7 @@
 export function getOvertimeToday(filteredData: string[][]): number {
   const today = new Date();
-  const currentDateStr = today.toDateString(); // e.g. "Wed Jun 11 2025"
-  const endOfWorkDay = new Date("1970-01-01T18:00:00");
+  const currentDateStr = today.toDateString();
+  const requiredDailyHours = 9;
 
   const todayRows = filteredData.filter((row) => {
     const dateStr = row[2].split(", ").slice(1).join(", ");
@@ -10,16 +10,26 @@ export function getOvertimeToday(filteredData: string[][]): number {
   });
 
   const total = todayRows.reduce((sum, row) => {
+    const timeInStr = row[3];
     const timeOutStr = row[4];
-    if (!timeOutStr) return sum;
+    if (!timeInStr || !timeOutStr) return sum;
 
+    let timeIn = parseTimeToDateObject(timeInStr);
     const timeOut = parseTimeToDateObject(timeOutStr);
-    const diffMs = timeOut.getTime() - endOfWorkDay.getTime();
 
-    if (diffMs <= 0) return sum;
+    // Create 9:00 AM reference
+    const nineAm = new Date("1970-01-01T09:00:00");
 
-    const hours = diffMs / (1000 * 60 * 60);
-    return sum + hours;
+    // If earlier than 9AM, normalize to 9AM
+    if (timeIn.getTime() < nineAm.getTime()) {
+      timeIn = nineAm;
+    }
+
+    const diffMs = timeOut.getTime() - timeIn.getTime();
+    const workedHours = diffMs / (1000 * 60 * 60);
+
+    const overtime = workedHours - requiredDailyHours;
+    return overtime > 0 ? sum + overtime : sum;
   }, 0);
 
   return parseFloat(total.toFixed(2));
