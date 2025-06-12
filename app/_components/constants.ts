@@ -304,7 +304,7 @@ export const quotes = [
 export const YearAttendance = "2025";
 
 export const allowedUsers = {
-  "grunting.jelly@auroramy.com": "AHN01345",
+  "grunting.jelly@auroramy.com": "AHNV01345",
   "van.gogh@auroramy.com": "AHNV02245",
   "jason.ruben@auroramy.com": "AHNV00653",
   "micro.nomix@auroramy.com": "AHNV01807",
