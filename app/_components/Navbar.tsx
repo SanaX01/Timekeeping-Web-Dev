@@ -69,13 +69,18 @@ export default async function Navbar() {
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[200px] gap-4">
-                {user?.role === "user" ? (
-                  <NavigationMenuLink
-                    asChild
-                    className="text-center"
-                  >
-                    <Link href="/OTRequests">OT File Requests</Link>
-                  </NavigationMenuLink>
+                {user?.role === "admin" ? (
+                  <>
+                    <NavigationMenuLink
+                      asChild
+                      className="text-center"
+                    >
+                      <Link href="/OTRequests">OT File Requests</Link>
+                    </NavigationMenuLink>
+                    <li>
+                      <OvertimeForm />
+                    </li>
+                  </>
                 ) : (
                   <li>
                     <OvertimeForm />

@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { requestId, status } = await req.json();
+  const { requestId, status, feedback = "" } = await req.json();
 
   if (!requestId || !["Approved", "Rejected"].includes(status)) {
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
@@ -54,10 +54,10 @@ export async function POST(req: NextRequest) {
     // Column I (index 8) = Status, Column J (index 9) = Date Approved/Rejected
     await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
-      range: `${SHEET_NAME}!I${rowIndex + 1}:J${rowIndex + 1}`, // +1 because Sheets are 1-indexed
+      range: `${SHEET_NAME}!I${rowIndex + 1}:L${rowIndex + 1}`,
       valueInputOption: "USER_ENTERED",
       requestBody: {
-        values: [[status, datePH]],
+        values: [[status, datePH, "", feedback]],
       },
     });
 

@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
 import { toast } from "sonner";
+import { updateRequestStatus } from "@/app/actions/update-request-status";
+import { useRouter } from "next/navigation";
 
 type RequestProps = {
   name: string;
@@ -25,30 +27,25 @@ type RequestProps = {
 
 export default function UserRequestCard({ name, dateRequested, createdAt, reason, requestId, status }: RequestProps) {
   const [open, setOpen] = useState(false); // control dialog
+  const [feedbackDialog, setFeedbackDialog] = useState(false); // reject dialog
+  const [feedback, setFeedback] = useState("");
+  const router = useRouter();
 
   const handleAction = async (status: "Approved" | "Rejected") => {
-    try {
-      const res = await fetch("/api/update-request-status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          requestId,
-          status,
-        }),
-      });
+    const result = await updateRequestStatus({
+      requestId,
+      status,
+      feedback: status === "Rejected" ? feedback : "",
+    });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        toast.error(data.error || "Something went wrong");
-        return;
-      }
-
+    if (result.success) {
       toast.success(`Request ${status}`);
-      setOpen(false); // ✅ close dialog on success
-    } catch (error) {
-      toast.error("Failed to update status");
-      console.error(error);
+      setFeedback("");
+      setFeedbackDialog(false);
+      setOpen(false);
+      router.refresh(); // ✅ will refresh border color
+    } else {
+      toast.error(result.error || "Something went wrong");
     }
   };
 
@@ -102,8 +99,7 @@ export default function UserRequestCard({ name, dateRequested, createdAt, reason
               <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
               <Button
                 variant="destructive"
-                className="cursor-pointer"
-                onClick={() => handleAction("Rejected")}
+                onClick={() => setFeedbackDialog(true)}
               >
                 Reject
               </Button>
@@ -113,6 +109,36 @@ export default function UserRequestCard({ name, dateRequested, createdAt, reason
                 onClick={() => handleAction("Approved")}
               >
                 Approve
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        <AlertDialog
+          open={feedbackDialog}
+          onOpenChange={setFeedbackDialog}
+        >
+          <AlertDialogContent className="sm:max-w-md">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Reject Request</AlertDialogTitle>
+            </AlertDialogHeader>
+
+            <div className="space-y-2 text-sm">
+              <p>Please provide a reason for rejection:</p>
+              <textarea
+                className="w-full min-h-[80px] p-2 border border-input rounded-md text-sm"
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                placeholder="Reason for rejection"
+              />
+            </div>
+
+            <AlertDialogFooter className="mt-4 flex justify-between">
+              <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+              <Button
+                variant="destructive"
+                onClick={() => handleAction("Rejected")}
+              >
+                Confirm
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
