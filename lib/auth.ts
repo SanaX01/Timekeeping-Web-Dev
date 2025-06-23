@@ -16,7 +16,11 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = ["grunting.jelly@auroramy.com", "jason.ruben@auroramy.com"].includes(user.email!) ? "admin" : "user";
+        token.role = ["grunting.jelly@auroramy.com", "jason.ruben@auroramy.com", "jin.kazama@auroramy.com", "khris.lee@auroramy.com"].includes(
+          user.email!
+        )
+          ? "admin"
+          : "user";
       }
       return token;
     },

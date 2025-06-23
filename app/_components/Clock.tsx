@@ -14,7 +14,7 @@ export default function Clock() {
   }, []);
 
   const content = now ? (
-    <div className="font-mono text-sm text-foreground h-full">
+    <div className="font-mono text-sm text-foreground h-full ">
       {new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(now)},{" "}
       {new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric" }).format(now)}
       {" — "}
@@ -31,5 +31,5 @@ export default function Clock() {
     <Skeleton className="h-full w-[431px] rounded-full" />
   );
 
-  return <div className="h-[20px] flex items-center">{content}</div>;
+  return <div className="h-[20px] w-full flex justify-center items-center">{content}</div>;
 }

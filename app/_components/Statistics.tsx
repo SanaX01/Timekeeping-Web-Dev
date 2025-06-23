@@ -28,7 +28,7 @@ export default async function Statistics() {
   const filteredData = data.filter((row) => row[1] === email);
 
   if (filteredData.length === 0) {
-    return <div className="text-center mt-20">No entries found for your account.</div>;
+    return <div className="text-center mt-20 hidden">No entries found for your account.</div>;
   }
 
   const latestTimeOut = filteredData[filteredData.length - 1];
@@ -39,28 +39,28 @@ export default async function Statistics() {
   const overtimeToday = getOvertimeToday(filteredData);
 
   return (
-    <div className="absolute left-0 top-0 w-full py-6 px-5 md:px-0 overflow-hidden">
+    <div className="w-full py-6 px-5 md:px-0 overflow-hidden">
       <div className="grid md:grid-cols-4 grid-cols-1 gap-4 text-center text-foreground">
-        <div className="leading-none md:text-start md:border-l-2  border-primary pl-2 animate__animated animate__fadeInLeft delay-500">
+        <div className="leading-none md:text-start md:border-l-2  border-primary pl-0 md:pl-2 animate__animated animate__fadeInLeft delay-500">
           <p className="font-semibold ">Earliest Time In in {monthName}</p>
           <p className="text-sm text-muted-foreground">
             {!earliestTimeInThisMonth ? "No entries found." : `On ${earliestTimeInThisMonth.date} at ${earliestTimeInThisMonth.time}`}
           </p>
         </div>
 
-        <div className="leading-none md:text-start md:border-l-2 border-primary pl-2 animate__animated animate__fadeInLeftBig delay-0">
+        <div className="leading-none md:text-start md:border-l-2 border-primary pl-0 md:pl-2 animate__animated animate__fadeInLeftBig delay-0">
           <p className="font-semibold">Latest Time Out</p>
           <p className="text-sm text-muted-foreground">
             {latestTimeOut?.[4] ? `On ${latestTimeOut[2]} at ${latestTimeOut[4]}` : "No entries found."}
           </p>
         </div>
 
-        <div className="leading-none md:text-end md:border-r-2 border-primary pr-2 animate__animated animate__fadeInRightBig delay-0">
+        <div className="leading-none md:text-end md:border-r-2 border-primary pr-0 md:pr-2 animate__animated animate__fadeInRightBig delay-0">
           <p className="font-semibold">Total Overtime in {monthName}</p>
           <p className="text-sm text-muted-foreground">{totalOvertime > 0 ? `${totalOvertime} hours` : "No overtime this month"}</p>
         </div>
 
-        <div className="leading-none md:text-end md:border-r-2 border-primary pr-2 animate__animated animate__fadeInRight delay-500">
+        <div className="leading-none md:text-end md:border-r-2 border-primary pr-0 md:pr-2 animate__animated animate__fadeInRight delay-500">
           <p className="font-semibold">Overtime Today</p>
           <p className="text-sm text-muted-foreground">{overtimeToday > 0 ? `${overtimeToday} hours` : "No overtime today"}</p>
         </div>

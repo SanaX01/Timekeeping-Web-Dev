@@ -23,8 +23,8 @@ export async function middleware(req: NextRequest) {
   const protectedPaths = ["/dashboard", "/home"];
   if (protectedPaths.some((path) => pathname.startsWith(path))) {
     if (!token) {
-      const url = new URL("/api/auth/signin", req.url);
-      url.searchParams.set("callbackUrl", req.url);
+      const url = new URL("/", req.url);
+
       return NextResponse.redirect(url);
     }
 

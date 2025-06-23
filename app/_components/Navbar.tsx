@@ -14,8 +14,8 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import SignOutButton from "./SignOutButton";
-import LeaveBalanceModal from "./LeaveBalanceModal";
 import { getLeaveBalanceByEmail } from "@/lib/getLeaveBalance";
+import OvertimeForm from "./OvertimeForm";
 
 export default async function Navbar() {
   const session = await getServerSession(authOptions);
@@ -40,14 +40,14 @@ export default async function Navbar() {
               <Link href="/home">Home</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <NavigationMenuLink
               asChild
               className={navigationMenuTriggerStyle()}
             >
               <Link href="/announcements">Announcements</Link>
             </NavigationMenuLink>
-          </NavigationMenuItem>
+          </NavigationMenuItem> */}
           {user?.role === "admin" && (
             <NavigationMenuItem>
               <NavigationMenuLink
@@ -69,9 +69,18 @@ export default async function Navbar() {
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[200px] gap-4">
-                <li>
-                  <LeaveBalanceModal leaveData={leaveData} />
-                </li>
+                {user?.role === "user" ? (
+                  <NavigationMenuLink
+                    asChild
+                    className="text-center"
+                  >
+                    <Link href="/OTRequests">OT File Requests</Link>
+                  </NavigationMenuLink>
+                ) : (
+                  <li>
+                    <OvertimeForm />
+                  </li>
+                )}
                 <li>
                   <SignOutButton />
                 </li>

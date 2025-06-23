@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { useState, useEffect, useTransition } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -100,8 +99,8 @@ export default function Welcome() {
     });
   };
   return (
-    <>
-      <div className="h-[48px] flex items-end">
+    <div className="gap-y-10 h-[500px] flex flex-col items-center justify-center w-full">
+      <div className="h-[48px] flex justify-center items-end w-full">
         {welcomeName === "" ? (
           <Skeleton className="h-[20px] w-[650px] rounded-full" />
         ) : (
@@ -147,6 +146,6 @@ export default function Welcome() {
           )}
         </Button>
       </div>
-    </>
+    </div>
   );
 }
