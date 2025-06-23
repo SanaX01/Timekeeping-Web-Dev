@@ -75,16 +75,24 @@ export default async function Navbar() {
                       asChild
                       className="text-center"
                     >
-                      <Link href="/OTRequests">OT File Requests</Link>
+                      <Link href="/FileRequests">File Requests</Link>
                     </NavigationMenuLink>
                     <li>
                       <OvertimeForm />
                     </li>
                   </>
                 ) : (
-                  <li>
-                    <OvertimeForm />
-                  </li>
+                  <>
+                    <NavigationMenuLink
+                      asChild
+                      className="text-center"
+                    >
+                      <Link href="/myrequests">My Requests</Link>
+                    </NavigationMenuLink>
+                    <li>
+                      <OvertimeForm />
+                    </li>
+                  </>
                 )}
                 <li>
                   <SignOutButton />

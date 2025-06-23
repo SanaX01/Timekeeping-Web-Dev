@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  const protectedPaths = ["/dashboard", "/home"];
+  const protectedPaths = ["/dashboard", "/home", "/FileRequests"];
   if (protectedPaths.some((path) => pathname.startsWith(path))) {
     if (!token) {
       const url = new URL("/", req.url);

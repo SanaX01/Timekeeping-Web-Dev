@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
   const sheets = google.sheets({ version: "v4", auth });
 
   const spreadsheetId = process.env.GOOGLE_SHEET_ID;
-  const range = "OTRequests!A2:J";
+  const range = "OTRequests!A2:M";
 
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,

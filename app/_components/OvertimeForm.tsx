@@ -26,18 +26,23 @@ export default function EveryForm() {
   const { data: session } = useSession();
   const [formType, setFormType] = useState<"OT" | "VL" | "SL" | null>(null);
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [startTime, setStartTime] = useState("");
+  const [startTime, setStartTime] = useState("09:00");
   const [open, setOpen] = useState(false);
   const [endTime, setEndTime] = useState("");
   const [reason, setReason] = useState("");
 
   const handleSubmit = async () => {
+    if (formType === "OT" && !endTime) {
+      toast.error("Please provide an end time.");
+      return;
+    }
+
     const res = await submitRequest({
       email: session?.user?.email ?? "",
       name: session?.user?.name ?? "",
       reason,
-      startTime,
-      endTime,
+      startTime: formType === "OT" ? startTime : "", // ✅ Only submit 6:00 for OT
+      endTime: formType === "OT" ? endTime : "", // ✅ Only include endTime for OT
       date: format(date!, "yyyy-MM-dd"),
       type: formType ?? "OT",
     });
@@ -117,7 +122,7 @@ export default function EveryForm() {
                   <label className="text-sm font-medium">Start Time</label>
                   <Input
                     type="time"
-                    value="09:00"
+                    value={startTime}
                     disabled
                     className="cursor-not-allowed bg-muted"
                   />
@@ -128,6 +133,7 @@ export default function EveryForm() {
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -164,7 +170,7 @@ export default function EveryForm() {
           {formType && (
             <Button
               onClick={handleSubmit}
-              disabled={!reason}
+              disabled={!reason || (formType === "OT" && !endTime)}
             >
               Submit
             </Button>

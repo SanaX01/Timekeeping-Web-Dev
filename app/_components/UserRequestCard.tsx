@@ -15,7 +15,8 @@ import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
 import { toast } from "sonner";
 import { updateRequestStatus } from "@/app/actions/update-request-status";
 import { useRouter } from "next/navigation";
-
+import { useSession } from "next-auth/react";
+import { Skeleton } from "@/components/ui/skeleton";
 type RequestProps = {
   name: string;
   dateRequested: string;
@@ -23,9 +24,13 @@ type RequestProps = {
   reason: string;
   requestId: string;
   status: string;
+  type: string;
+  feedbackReason?: string;
 };
 
-export default function UserRequestCard({ name, dateRequested, createdAt, reason, requestId, status }: RequestProps) {
+export default function UserRequestCard({ name, dateRequested, createdAt, reason, requestId, status, type, feedbackReason }: RequestProps) {
+  const session = useSession();
+  const role = session.data?.user?.role || "user"; // default to user if session is not available
   const [open, setOpen] = useState(false); // control dialog
   const [feedbackDialog, setFeedbackDialog] = useState(false); // reject dialog
   const [feedback, setFeedback] = useState("");
@@ -50,24 +55,40 @@ export default function UserRequestCard({ name, dateRequested, createdAt, reason
   };
 
   return (
-    <Card
-      className={`w-full max-w-md shadow-md rounded-2xl ${
-        status === "Approved" ? "border border-green-500" : status === "Rejected" ? "border border-red-500" : "border border-yellow-500"
-      }`}
-    >
-      <CardHeader>
-        <CardTitle className="text-lg">{name}</CardTitle>
+    <Card className={`w-full max-w-md shadow-md rounded-2xl `}>
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg font-semibold text-foreground">{name}</CardTitle>
+          <span
+            className={`text-xs font-medium px-2 py-1 rounded-full ${
+              status === "Approved"
+                ? "bg-green-100 text-green-800"
+                : status === "Rejected"
+                ? "bg-red-100 text-red-800"
+                : "bg-yellow-100 text-yellow-800"
+            }`}
+          >
+            {status}
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground mt-1">Request ID: {requestId}</p>
       </CardHeader>
 
-      <CardContent className="space-y-2 text-sm text-primary-foreground">
-        <p>
-          <strong>Date Requested:</strong>
-        </p>
-        <p>{dateRequested}</p>
-        <p>
-          <strong>Created At:</strong>
-        </p>
-        <p>{createdAt}</p>
+      <CardContent className="text-sm text-muted-foreground space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="font-medium text-foreground">Type:</span>
+          <span className="capitalize">{type}</span>
+        </div>
+
+        <div>
+          <p className="font-medium text-foreground">Date Requested:</p>
+          <p>{dateRequested}</p>
+        </div>
+
+        <div>
+          <p className="font-medium text-foreground">Created At:</p>
+          <p>{createdAt}</p>
+        </div>
       </CardContent>
 
       <CardFooter className="flex justify-end">
@@ -76,40 +97,79 @@ export default function UserRequestCard({ name, dateRequested, createdAt, reason
           onOpenChange={setOpen}
         >
           <AlertDialogTrigger asChild>
-            <Button variant="outline">View</Button>
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+            >
+              View
+            </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="sm:max-w-lg border-y-primary">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Request Details</AlertDialogTitle>
+          <AlertDialogContent className="sm:max-w-lg rounded-xl p-6 bg-background border border-border">
+            <AlertDialogHeader className="mb-4">
+              <AlertDialogTitle className="text-xl font-semibold text-foreground">Request Details</AlertDialogTitle>
             </AlertDialogHeader>
 
-            <div className="space-y-2 text-sm">
-              <p>
-                <strong>Reason:</strong> {reason}
-              </p>
-              <p>
-                <strong>Request ID:</strong> {requestId}
-              </p>
-              <p>
-                <strong>Status:</strong> {status}
-              </p>
+            <div className="space-y-4 text-sm">
+              <div className="flex justify-between">
+                <span className="font-medium text-foreground">Reason:</span>
+                <span className="text-right text-muted-foreground">{reason}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="font-medium text-foreground">Request ID:</span>
+                <span className="text-muted-foreground">{requestId}</span>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-foreground">Status:</span>
+                <span
+                  className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    status === "Approved"
+                      ? "bg-green-500/10 text-green-500"
+                      : status === "Rejected"
+                      ? "bg-red-500/10 text-red-500"
+                      : "bg-yellow-500/10 text-yellow-500"
+                  }`}
+                >
+                  {status}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="font-medium text-foreground">Type:</span>
+                <span className="capitalize text-muted-foreground">{type}</span>
+              </div>
+
+              {status === "Rejected" && (
+                <div className="border border-red-400/30 bg-red-500/5 p-4 rounded-md">
+                  <p className="text-sm font-medium text-red-500 mb-1">Rejection Feedback</p>
+                  <p className="text-sm text-red-400 italic">{feedbackReason || "No feedback provided."}</p>
+                </div>
+              )}
             </div>
 
-            <AlertDialogFooter className="mt-4 flex justify-between gap-2">
+            <AlertDialogFooter
+              className="mt-6 flex justify-between"
+              style={{ justifyContent: "space-between" }}
+            >
               <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
-              <Button
-                variant="destructive"
-                onClick={() => setFeedbackDialog(true)}
-              >
-                Reject
-              </Button>
-              <Button
-                variant="default"
-                className="cursor-pointer"
-                onClick={() => handleAction("Approved")}
-              >
-                Approve
-              </Button>
+              {role === "admin" && (
+                <div className="flex gap-2">
+                  <Button
+                    variant="destructive"
+                    className="cursor-pointer hover:scale-95 transition-transform"
+                    onClick={() => setFeedbackDialog(true)}
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    className="bg-green-800 hover:bg-green-800 cursor-pointer hover:scale-95 transition-transform"
+                    onClick={() => handleAction("Approved")}
+                  >
+                    Approve
+                  </Button>
+                </div>
+              )}
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -137,6 +197,7 @@ export default function UserRequestCard({ name, dateRequested, createdAt, reason
               <Button
                 variant="destructive"
                 onClick={() => handleAction("Rejected")}
+                className="cursor-pointer"
               >
                 Confirm
               </Button>
