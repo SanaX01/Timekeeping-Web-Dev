@@ -17,6 +17,9 @@ import { updateRequestStatus } from "@/app/actions/update-request-status";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Copy } from "lucide-react";
+import { config } from "@/config";
+
 type RequestProps = {
   name: string;
   dateRequested: string;
@@ -106,7 +109,16 @@ export default function UserRequestCard({ name, dateRequested, createdAt, reason
           </AlertDialogTrigger>
           <AlertDialogContent className="sm:max-w-lg rounded-xl p-6 bg-background border border-border">
             <AlertDialogHeader className="mb-4">
-              <AlertDialogTitle className="text-xl font-semibold text-foreground">Request Details</AlertDialogTitle>
+              <AlertDialogTitle className="text-xl font-semibold text-foreground flex items-center justify-between">
+                <div>Request Details</div>
+                <Copy
+                  className="w-5 h-5 cursor-pointer text-muted-foreground hover:text-foreground"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${config.BASE_URI}/request?id=${requestId}`); // or any value you want to copy
+                    toast.success("Copied to clipboard");
+                  }}
+                />
+              </AlertDialogTitle>
             </AlertDialogHeader>
 
             <div className="space-y-4 text-sm">

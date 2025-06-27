@@ -2,10 +2,29 @@
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 
+function calculateOtHours(start: string, end: string): number {
+  const [startH, startM] = start.split(":").map(Number);
+  const [endH, endM] = end.split(":").map(Number);
+
+  const startDate = new Date(0, 0, 0, startH, startM);
+  const endDate = new Date(0, 0, 0, endH, endM);
+  const dutyOut = new Date(0, 0, 0, 18, 0); // 6:00 PM
+
+  // Handle overnight OT (e.g., 9 PM to 1 AM)
+  if (endDate < startDate) endDate.setDate(endDate.getDate() + 1);
+
+  const actualStart = startDate < dutyOut ? dutyOut : startDate;
+
+  const diffMs = endDate.getTime() - actualStart.getTime();
+  const diffHrs = diffMs / (1000 * 60 * 60);
+
+  return diffHrs > 0 ? diffHrs : 0;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-
+    const calculateOThours = calculateOtHours(body.startTime, body.endTime).toFixed(2) + " OT Hours";
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
@@ -32,7 +51,7 @@ export async function POST(req: NextRequest) {
         now, // H: Date Created
         "Pending", // I: Status
         "", // J: Date Approved/Rejected
-        "", // K: OT Hours
+        calculateOThours || "", // K: OT Hours
         "", // L: Feedback
         body.type || "OT", // M: Type
       ],
