@@ -24,6 +24,7 @@ export default function Welcome() {
   const [welcomeName, setWelcomeName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState<"time-in" | "time-out" | null>(null);
+  const [hasTimedIn, setHasTimedIn] = useState(false);
 
   useEffect(() => {
     if (alert) {
@@ -49,6 +50,16 @@ export default function Welcome() {
       setName(session.user.email! in allowedUsers ? allowedUsers[session.user.email! as keyof typeof allowedUsers] : "");
     }
   }, [session]);
+
+  useEffect(() => {
+    const now = new Date();
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+    const phNow = new Date(utc + 8 * 60 * 60 * 1000);
+    const todayKey = `hasTimedIn_${phNow.toDateString()}`;
+
+    const hasTimedInToday = localStorage.getItem(todayKey) === "true";
+    setHasTimedIn(hasTimedInToday);
+  }, []);
 
   // useEffect(() => {
   //   const now = new Date();
@@ -96,8 +107,17 @@ export default function Welcome() {
       const result = await recordTime(name, email, action);
       setAlert({ status: result.ok ? "success" : "error", message: result.message });
       setLoading(null);
+      if (action === "time-in" && result.ok) {
+        const now = new Date();
+        const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+        const phNow = new Date(utc + 8 * 60 * 60 * 1000);
+        const todayKey = `hasTimedIn_${phNow.toDateString()}`;
+        localStorage.setItem(todayKey, "true");
+        setHasTimedIn(true);
+      }
     });
   };
+
   return (
     <div className="gap-y-10 h-[500px] flex flex-col items-center justify-center w-full">
       <div className="h-[48px] flex justify-center items-end w-full">
@@ -111,7 +131,7 @@ export default function Welcome() {
         <Button
           onClick={() => handleRecordTime("time-in")}
           className="cursor-pointer flex items-center justify-center w-32 h-12"
-          disabled={loading === "time-in" || isPending}
+          disabled={loading === "time-in" || isPending || hasTimedIn}
         >
           {loading === "time-in" ? (
             <div className="loader">

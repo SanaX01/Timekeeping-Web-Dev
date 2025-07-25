@@ -52,12 +52,24 @@ export async function POST(req: NextRequest) {
     });
 
     // Column I (index 8) = Status, Column J (index 9) = Date Approved/Rejected
-    await sheets.spreadsheets.values.update({
+    await sheets.spreadsheets.values.batchUpdate({
       spreadsheetId: SHEET_ID,
-      range: `${SHEET_NAME}!I${rowIndex + 1}:L${rowIndex + 1}`,
-      valueInputOption: "USER_ENTERED",
       requestBody: {
-        values: [[status, datePH, "", feedback]],
+        valueInputOption: "USER_ENTERED",
+        data: [
+          {
+            range: `${SHEET_NAME}!I${rowIndex + 1}`, // Status
+            values: [[status]],
+          },
+          {
+            range: `${SHEET_NAME}!J${rowIndex + 1}`, // Date Approved/Rejected
+            values: [[datePH]],
+          },
+          {
+            range: `${SHEET_NAME}!L${rowIndex + 1}`, // Feedback
+            values: [[feedback]],
+          },
+        ],
       },
     });
 
