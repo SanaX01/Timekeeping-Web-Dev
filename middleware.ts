@@ -23,9 +23,7 @@ export async function middleware(req: NextRequest) {
   const protectedPaths = ["/dashboard", "/home", "/FileRequests"];
   if (protectedPaths.some((path) => pathname.startsWith(path))) {
     if (!token) {
-      const url = new URL("/", req.url);
-
-      return NextResponse.redirect(url);
+      return NextResponse.redirect(new URL("/", req.url));
     }
 
     if (pathname.startsWith("/dashboard") && token.role !== "admin") {
@@ -33,10 +31,22 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // Sheet data internal API protection
   if (pathname.startsWith("/api/sheet-data")) {
     const authHeader = req.headers.get("x-internal-secret");
-
     if (authHeader !== process.env.INTERNAL_API_SECRET) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+  }
+
+
+  // Vercel Cron protection for /api/record-time
+
+  if (pathname === "/api/record-time") {
+    const authHeader = req.headers.get("Authorization");
+    const expected = `Bearer ${process.env.CRON_SECRET}`;
+
+    if (authHeader !== expected) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
   }
@@ -45,5 +55,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/login", "/home", "/dashboard", "/api/sheet-data/:path*"],
+  matcher: ["/", "/login", "/home", "/dashboard", "/api/sheet-data/:path*", "/api/sync-to-sheets"],
 };

@@ -1,120 +1,50 @@
-import { getServerSession } from "next-auth/next";
-import authOptions from "@/lib/auth"; // your next-auth config
-import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
-import { YearAttendance, ALLOWED_EMAILS, allowedUsers } from "@/app/_components/constants";
+import { Redis } from "@upstash/redis";
 
-const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
-const SHEET_NAME = YearAttendance;
+export const redis = Redis.fromEnv();
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session || !session.user?.email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { name, email, action } = await req.json();
+  if (process.env.NODE_ENV === "production") {
+    const token = req.headers.get("Authorization");
+    if (token !== `Bearer ${process.env.CRON_SECRET}`) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
   }
 
-  const email = session.user.email.toLowerCase();
-  const name = (allowedUsers as Record<string, string>)[email] || session.user.name || "";
-
-  const { action } = await req.json();
-
-  if (!ALLOWED_EMAILS.includes(email.trim().toLowerCase())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  if (!name || !email || !["time-in", "time-out"].includes(action)) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  if (!name || !email || !action) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-  }
-
-  const auth = new google.auth.GoogleAuth({
-    credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY!),
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
-  const sheets = google.sheets({ version: "v4", auth });
-
-  const now = new Date();
-  const datePH = now.toLocaleDateString("en-GB", {
-    timeZone: "Asia/Manila",
+  const date = new Date().toLocaleDateString("en-PH", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-  const formattedDate = datePH.replace(/^(\w+)\s/, "$1, ");
 
-  const timePH = now.toLocaleTimeString("en-PH", {
-    timeZone: "Asia/Manila",
-    hour: "2-digit",
+  const now = new Date().toLocaleTimeString("en-PH", {
+    hour: "numeric",
     minute: "2-digit",
     hour12: true,
   });
 
-  if (action === "time-in") {
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SHEET_ID,
-      range: `${SHEET_NAME}!A:E`,
-    });
+  const key = `attendance:${email}:${date}`;
+  const existing = await redis.hgetall(key);
 
-    const rows = response.data.values || [];
+  // Only update timeIn or timeOut
+  const newData = action === "time-in" ? { timeIn: now } : { timeOut: now };
 
-    const alreadyTimeIn = rows.some(([rowName, rowEmail, rowDate]) => {
-      return (
-        rowName?.trim().toLowerCase() === name.trim().toLowerCase() &&
-        rowEmail?.trim().toLowerCase() === email.trim().toLowerCase() &&
-        rowDate?.trim() === formattedDate.trim()
-      );
-    });
+  await redis.hset(key, {
+    name,
+    email,
+    date,
+    ...existing,
+    ...newData,
+    synced: "false", // always mark as unsynced until Sheets confirms
+  });
 
-    if (alreadyTimeIn) {
-      return NextResponse.json({ error: "Time-in already recorded for today." }, { status: 409 });
-    }
-
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SHEET_ID,
-      range: `${SHEET_NAME}!A:E`,
-      valueInputOption: "USER_ENTERED",
-      requestBody: {
-        values: [[name, email, datePH, timePH, ""]],
-      },
-    });
-
-    return NextResponse.json({ message: "Time-in at " + timePH + " recorded!" });
-  }
-
-  if (action === "time-out") {
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SHEET_ID,
-      range: `${SHEET_NAME}!A:E`,
-    });
-
-    const rows = response.data.values || [];
-
-    for (let i = rows.length - 1; i >= 1; i--) {
-      const [rowName, rowEmail, rowDate, timeIn, timeOut] = rows[i];
-
-      if (
-        rowName?.trim().toLowerCase() === name.trim().toLowerCase() &&
-        rowEmail?.trim().toLowerCase() === email.trim().toLowerCase() &&
-        rowDate?.trim() === formattedDate.trim() &&
-        (!timeOut || !timeOut.trim())
-      ) {
-        const rowIndex = i + 1;
-        await sheets.spreadsheets.values.update({
-          spreadsheetId: SHEET_ID,
-          range: `${SHEET_NAME}!E${rowIndex}`,
-          valueInputOption: "USER_ENTERED",
-          requestBody: {
-            values: [[timePH]],
-          },
-        });
-
-        return NextResponse.json({ message: "Time-out at " + timePH + " recorded!" }, { status: 200 });
-      }
-    }
-
-    return NextResponse.json({ error: "No matching time-in record for today found." }, { status: 404 });
-  }
-
-  return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+  return NextResponse.json({
+    message: `✅ Successfully recorded ${action === "time-in" ? "Time In" : "Time Out"}`,
+  });
 }

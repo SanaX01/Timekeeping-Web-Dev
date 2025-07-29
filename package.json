@@ -18,6 +18,8 @@
     "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.3",
+    "@upstash/qstash": "^2.8.1",
+    "@upstash/redis": "^1.35.1",
     "animate.css": "^4.1.1",
     "bun": "^1.2.15",
     "class-variance-authority": "^0.7.1",
