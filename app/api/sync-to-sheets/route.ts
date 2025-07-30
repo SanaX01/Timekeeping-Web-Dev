@@ -5,7 +5,7 @@ import { Redis } from "@upstash/redis";
 import { YearAttendance } from "@/app/_components/constants";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
-const SHEET_NAME = "Sheet6";
+const SHEET_NAME = YearAttendance;
 export const redis = Redis.fromEnv();
 
 export async function GET(req: NextRequest) {
