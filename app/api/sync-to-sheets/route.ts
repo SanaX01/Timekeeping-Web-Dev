@@ -1,14 +1,14 @@
-// app/api/sync-to-sheets/route.ts
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
 import { YearAttendance } from "@/app/_components/constants";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
-const SHEET_NAME = YearAttendance;
 
 export async function GET(req: NextRequest) {
   const redis = Redis.fromEnv();
+  const SHEET_NAME = YearAttendance;
+
   const auth = new google.auth.GoogleAuth({
     credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY!),
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
@@ -24,7 +24,6 @@ export async function GET(req: NextRequest) {
 
     if (record?.synced === "true") continue;
 
-    // Append to sheet only if both timeIn and timeOut or just timeIn exists
     if (record?.timeIn) {
       const values = [[record.name, record.email, record.date, record.timeIn, record.timeOut || ""]];
 
@@ -35,7 +34,6 @@ export async function GET(req: NextRequest) {
         requestBody: { values },
       });
 
-      // Mark as synced
       await redis.hset(key, { synced: true });
       syncedCount++;
     }
