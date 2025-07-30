@@ -45,6 +45,6 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json({
-    message: `✅ Successfully recorded ${action === "time-in" ? "Time In" : "Time Out"}`,
+    message: `Successfully recorded ${action === "time-in" ? "Time In" : "Time Out"}`,
   });
 }

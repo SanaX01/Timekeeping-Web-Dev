@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/record-time",
-      "schedule": "* 9 * * *",
+      "schedule": "* 2 * * *",
       "headers": {
         "Authorization": "Bearer cf237bd1fe066fa395e4f105fc8b3521b72e4489293a82c5d08173c7d5a8bc5c"
       }
