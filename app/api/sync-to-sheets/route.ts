@@ -6,9 +6,9 @@ import { YearAttendance } from "@/app/_components/constants";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
 const SHEET_NAME = YearAttendance;
-export const redis = Redis.fromEnv();
 
 export async function GET(req: NextRequest) {
+  const redis = Redis.fromEnv();
   const auth = new google.auth.GoogleAuth({
     credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY!),
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
