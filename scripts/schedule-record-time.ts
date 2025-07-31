@@ -9,8 +9,8 @@ async function schedule() {
   });
 
   await client.publish({
-    url: "https://good-swans-joke.loca.lt/api/sync-to-sheets",
-    schedule: "0 2 * * *", // 2am UTC
+    url: "https://wide-places-scream.loca.lt/api/sync-to-sheets",
+    schedule: "0 19 * * *", // 2am UTC
     headers: {
       Authorization: "Bearer cf237bd1fe066fa395e4f105fc8b3521b72e4489293a82c5d08173c7d5a8bc5c",
     },
