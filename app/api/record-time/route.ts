@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
 
-export const redis = Redis.fromEnv();
-
 export async function POST(req: NextRequest) {
+  const redis = Redis.fromEnv();
   const { name, email, action } = await req.json();
   if (process.env.NODE_ENV === "production") {
     const token = req.headers.get("Authorization");
