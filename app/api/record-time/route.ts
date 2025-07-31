@@ -4,8 +4,7 @@ import { Redis } from "@upstash/redis";
 export async function POST(req: NextRequest) {
   const redis = Redis.fromEnv();
   const { name, email, action } = await req.json();
-
-  console.log("Route auth header:", req.headers.get("x-internal-secret"));
+ 
   if (process.env.NODE_ENV === "production") {
     const token = req.headers.get("x-internal-secret"); // <-- this might be null in dev
     if (token !== `Bearer ${process.env.CRON_SECRET}`) {

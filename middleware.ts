@@ -42,7 +42,9 @@ export async function middleware(req: NextRequest) {
   if (pathname === "/api/record-time" || pathname === "/api/sync-to-sheets") {
     const authHeader = req.headers.get("Authorization");
     const expected = `Bearer ${process.env.CRON_SECRET}`;
-
+console.log("Auth Header:", authHeader);
+    console.log("Expected:", expected);
+    console.log("Dito mali");
     if (authHeader !== expected) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
