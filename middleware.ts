@@ -39,10 +39,19 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (pathname === "/api/record-time" || pathname === "/api/sync-to-sheets") {
+  if (pathname === "/api/record-time") {
+    const authHeader = req.headers.get("x-internal-secret");
+    const expected = `Bearer ${process.env.CRON_SECRET}`;
+
+    if (authHeader !== expected) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+  }
+
+  if (pathname === "/api/sync-to-sheets") {
     const authHeader = req.headers.get("Authorization");
     const expected = `Bearer ${process.env.CRON_SECRET}`;
-console.log("Auth Header:", authHeader);
+    console.log("Auth Header:", authHeader);
     console.log("Expected:", expected);
     console.log("Dito mali");
     if (authHeader !== expected) {
