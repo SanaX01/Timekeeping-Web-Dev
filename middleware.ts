@@ -39,8 +39,8 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (pathname === "/api/record-time") {
-    const authHeader = req.headers.get("Authorization");
+  if (pathname === "/api/record-time" || pathname === "/api/sync-to-sheets") {
+    const authHeader = req.headers.get("Authorization"); // ✅ correct header
     const expected = `Bearer ${process.env.CRON_SECRET}`;
 
     if (authHeader !== expected) {
