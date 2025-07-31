@@ -39,8 +39,6 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-
-
   if (pathname === "/api/record-time") {
     const authHeader = req.headers.get("Authorization");
     const expected = `Bearer ${process.env.CRON_SECRET}`;
@@ -54,5 +52,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/login", "/home", "/dashboard", "/api/sheet-data/:path*", "/api/sync-to-sheets"],
+  matcher: ["/", "/login", "/home", "/dashboard", "/api/sheet-data/:path*", "/api/sync-to-sheets", "/api/record-time"],
 };
