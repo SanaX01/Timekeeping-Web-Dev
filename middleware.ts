@@ -40,15 +40,13 @@ export async function middleware(req: NextRequest) {
   }
 
   if (pathname === "/api/record-time") {
-    const authHeader = req.headers.get("Authorization");
-    console.log("authHeader ==> ", authHeader);
+    const authHeader = req.headers.get("x-internal-secret");
     const expected = `Bearer ${process.env.CRON_SECRET}`;
 
     if (authHeader !== expected) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
   }
-  console.log("Middleware auth header for record-time:", req.headers.get("Authorization"));
 
   return NextResponse.next();
 }
