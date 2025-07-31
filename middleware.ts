@@ -41,16 +41,26 @@ export async function middleware(req: NextRequest) {
 
   if (pathname === "/api/record-time") {
     const authHeader = req.headers.get("Authorization");
+    console.log("authHeader ==> ", authHeader);
     const expected = `Bearer ${process.env.CRON_SECRET}`;
 
     if (authHeader !== expected) {
-      return new NextResponse("Unauthorized Dito", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 401 });
     }
   }
+  console.log("Middleware auth header for record-time:", req.headers.get("Authorization"));
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/login", "/home", "/dashboard", "/api/sheet-data/:path*", "/api/sync-to-sheets", "/api/record-time"],
+  matcher: [
+    "/",
+    "/login",
+    "/home",
+    "/dashboard",
+    "/api/sheet-data/:path*",
+    "/api/sync-to-sheets",
+    "/api/record-time", // <- this was outside the array!
+  ],
 };

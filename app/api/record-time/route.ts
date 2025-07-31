@@ -4,12 +4,6 @@ import { Redis } from "@upstash/redis";
 export async function POST(req: NextRequest) {
   const redis = Redis.fromEnv();
   const { name, email, action } = await req.json();
-  if (process.env.NODE_ENV === "production") {
-    const token = req.headers.get("Authorization");
-    if (token !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ error: "Unauthorized o Dito" }, { status: 401 });
-    }
-  }
 
   if (!name || !email || !["time-in", "time-out"].includes(action)) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
