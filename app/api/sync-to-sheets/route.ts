@@ -9,13 +9,6 @@ export async function GET(req: NextRequest) {
   const redis = Redis.fromEnv();
   const SHEET_NAME = YearAttendance;
 
-  if (process.env.NODE_ENV === "production") {
-    const token = req.headers.get("Authorization"); // <-- this might be null in dev
-    if (token !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ error: "Unauthorized o Dito" }, { status: 401 });
-    }
-  }
-
   const auth = new google.auth.GoogleAuth({
     credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY!),
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
