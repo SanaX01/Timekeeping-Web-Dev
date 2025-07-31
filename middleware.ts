@@ -40,14 +40,13 @@ export async function middleware(req: NextRequest) {
   }
 
 
-  // Vercel Cron protection for /api/record-time
 
   if (pathname === "/api/record-time") {
     const authHeader = req.headers.get("Authorization");
     const expected = `Bearer ${process.env.CRON_SECRET}`;
 
     if (authHeader !== expected) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return new NextResponse("Unauthorized Dito", { status: 401 });
     }
   }
 

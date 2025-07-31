@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   if (process.env.NODE_ENV === "production") {
     const token = req.headers.get("Authorization");
     if (token !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized o Dito" }, { status: 401 });
     }
   }
 
