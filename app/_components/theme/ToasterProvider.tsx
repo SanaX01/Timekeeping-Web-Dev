@@ -10,6 +10,7 @@ export function ToasterProvider() {
   return (
     <Toaster
       position="top-right"
+      richColors
       theme={resolvedTheme === "dark" ? "dark" : "light"}
       closeButton
     />
