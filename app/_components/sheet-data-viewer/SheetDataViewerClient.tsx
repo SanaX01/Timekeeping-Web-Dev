@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { months } from "../constants";
 import { YearAttendance } from "../constants";
+import React from "react";
 
 interface Props {
   initialData: string[][];
@@ -21,15 +22,21 @@ export default function SheetDataViewerClient({ initialData }: Props) {
   useEffect(() => {
     const lower = filter.toLowerCase();
 
-    const filtered = data.filter((row) => {
-      const nameMatch = row[0]?.toLowerCase().includes(lower);
-      const emailMatch = row[1]?.toLowerCase().includes(lower);
+    const filtered = data
+      .filter((row) => {
+        const nameMatch = row[0]?.toLowerCase().includes(lower);
+        const emailMatch = row[1]?.toLowerCase().includes(lower);
 
-      const date = new Date(row[2]);
-      const monthMatch = selectedMonth === "All" || date.toLocaleString("default", { month: "long" }) === selectedMonth;
+        const date = new Date(row[2]);
+        const monthMatch = selectedMonth === "All" || date.toLocaleString("default", { month: "long" }) === selectedMonth;
 
-      return (nameMatch || emailMatch) && monthMatch;
-    });
+        return (nameMatch || emailMatch) && monthMatch;
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a[2]);
+        const dateB = new Date(b[2]);
+        return dateB.getTime() - dateA.getTime(); // descending order
+      });
 
     setFilteredData(filtered);
   }, [filter, selectedMonth, data]);
@@ -72,7 +79,7 @@ export default function SheetDataViewerClient({ initialData }: Props) {
       </div>
 
       <Table>
-        <TableCaption className="mb-20">A list of your attendance.</TableCaption>
+        <TableCaption className="mb-20">Attendance list.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Name</TableHead>
@@ -84,18 +91,34 @@ export default function SheetDataViewerClient({ initialData }: Props) {
         </TableHeader>
         <TableBody>
           {filteredData.length > 0 ? (
-            filteredData.map((row, i) => (
-              <TableRow key={i}>
-                {row.map((cell, j) => (
-                  <TableCell
-                    key={j}
-                    className="border px-2 py-1"
-                  >
-                    {cell}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            filteredData.map((row, i) => {
+              const currentDate = row[2];
+              const prevDate = filteredData[i - 1]?.[2];
+              const showGap = i > 0 && currentDate !== prevDate;
+
+              return (
+                <React.Fragment key={i}>
+                  {showGap && (
+                    <TableRow>
+                      <TableCell
+                        colSpan={5}
+                        className="py-3 bg-primary/10"
+                      />
+                    </TableRow>
+                  )}
+                  <TableRow>
+                    {row.map((cell, j) => (
+                      <TableCell
+                        key={j}
+                        className="border px-2 py-1"
+                      >
+                        {cell}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </React.Fragment>
+              );
+            })
           ) : (
             <TableRow>
               <TableCell
