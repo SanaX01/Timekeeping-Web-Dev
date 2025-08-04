@@ -21,7 +21,7 @@
     "@upstash/qstash": "^2.8.1",
     "@upstash/redis": "^1.35.1",
     "animate.css": "^4.1.1",
-    "bun": "^1.2.15",
+    "bun": "^1.2.19",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

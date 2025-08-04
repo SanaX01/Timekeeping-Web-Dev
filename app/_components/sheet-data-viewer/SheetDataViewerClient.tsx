@@ -1,23 +1,32 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
 import { months } from "../constants";
 import { YearAttendance } from "../constants";
-import React from "react";
 
 interface Props {
   initialData: string[][];
 }
 
+function parseTimeInToMinutes(timeStr: string): number {
+  const [time, modifier] = timeStr.split(" ");
+  let [hours, minutes] = time.split(":").map(Number);
+
+  if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12;
+  if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
+
+  return hours * 60 + minutes;
+}
+
 export default function SheetDataViewerClient({ initialData }: Props) {
-  const [data, setData] = useState(initialData);
+  const [data] = useState(initialData);
   const [filter, setFilter] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("All");
-  const [filteredData, setFilteredData] = useState(initialData);
+  const [filteredData, setFilteredData] = useState<string[][]>([]);
 
   useEffect(() => {
     const lower = filter.toLowerCase();
@@ -26,16 +35,22 @@ export default function SheetDataViewerClient({ initialData }: Props) {
       .filter((row) => {
         const nameMatch = row[0]?.toLowerCase().includes(lower);
         const emailMatch = row[1]?.toLowerCase().includes(lower);
-
         const date = new Date(row[2]);
         const monthMatch = selectedMonth === "All" || date.toLocaleString("default", { month: "long" }) === selectedMonth;
-
         return (nameMatch || emailMatch) && monthMatch;
       })
       .sort((a, b) => {
         const dateA = new Date(a[2]);
         const dateB = new Date(b[2]);
-        return dateB.getTime() - dateA.getTime(); // descending order
+
+        if (dateA.getTime() !== dateB.getTime()) {
+          return dateB.getTime() - dateA.getTime();
+        }
+
+        const timeA = parseTimeInToMinutes(a[3]);
+        const timeB = parseTimeInToMinutes(b[3]);
+
+        return timeB - timeA; // latest time-in first
       });
 
     setFilteredData(filtered);
@@ -82,6 +97,7 @@ export default function SheetDataViewerClient({ initialData }: Props) {
         <TableCaption className="mb-20">Attendance list.</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-[50px]">#</TableHead>
             <TableHead className="w-[100px]">Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Date</TableHead>
@@ -91,38 +107,58 @@ export default function SheetDataViewerClient({ initialData }: Props) {
         </TableHeader>
         <TableBody>
           {filteredData.length > 0 ? (
-            filteredData.map((row, i) => {
-              const currentDate = row[2];
-              const prevDate = filteredData[i - 1]?.[2];
-              const showGap = i > 0 && currentDate !== prevDate;
+            (() => {
+              let currentDay = "";
+              let rowCount = 0;
 
-              return (
-                <React.Fragment key={i}>
-                  {showGap && (
+              return filteredData.map((row, i) => {
+                const date = row[2];
+                const isNewDate = currentDay !== date;
+
+                if (isNewDate) {
+                  currentDay = date;
+                  rowCount = 1;
+                } else {
+                  rowCount++;
+                }
+
+                const prevDate = filteredData[i - 1]?.[2];
+                const showGap = i > 0 && date !== prevDate;
+
+                return (
+                  <React.Fragment key={i}>
+                    {showGap && (
+                      <TableRow>
+                        <TableCell
+                          colSpan={6}
+                          className="py-3 bg-primary/10"
+                        />
+                      </TableRow>
+                    )}
                     <TableRow>
-                      <TableCell
-                        colSpan={5}
-                        className="py-3 bg-primary/10"
-                      />
+                      <TableCell className="border px-2 py-1 font-mono text-muted-foreground">{rowCount}</TableCell>
+                      {row.map((cell, j) => {
+                        const isTimeIn = j === 3;
+                        const isLate = isTimeIn && parseTimeInToMinutes(cell) > 9 * 60;
+
+                        return (
+                          <TableCell
+                            key={j}
+                            className={`border px-2 py-1 ${isTimeIn && isLate ? "bg-red-500/20" : ""}`}
+                          >
+                            {cell}
+                          </TableCell>
+                        );
+                      })}
                     </TableRow>
-                  )}
-                  <TableRow>
-                    {row.map((cell, j) => (
-                      <TableCell
-                        key={j}
-                        className="border px-2 py-1"
-                      >
-                        {cell}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </React.Fragment>
-              );
-            })
+                  </React.Fragment>
+                );
+              });
+            })()
           ) : (
             <TableRow>
               <TableCell
-                colSpan={5}
+                colSpan={6}
                 className="text-center"
               >
                 No records found.
