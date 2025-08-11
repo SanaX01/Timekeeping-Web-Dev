@@ -164,7 +164,7 @@ export default function UserRequestCard({ name, dateRequested, createdAt, reason
               className="mt-6 flex justify-between"
               style={{ justifyContent: "space-between" }}
             >
-              <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+              <AlertDialogCancel className="cursor-pointer border-2 px-2 rounded-md">Cancel</AlertDialogCancel>
               {role === "admin" && (
                 <div className="flex gap-2">
                   <Button

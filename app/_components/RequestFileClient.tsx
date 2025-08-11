@@ -115,7 +115,7 @@ export default function RequestFileClient({ rawData }: { rawData: string[][] }) 
             <Detail
               label="Status"
               value={data.status}
-              valueClass={data.status === "Approved" ? "text-green-600" : data.status === "Rejected" ? "text-red-600" : "text-gray-600"}
+              valueClass={data.status === "Approved" ? "text-green-600" : data.status === "Rejected" ? "text-red-600" : "text-yellow-600"}
             />
             <Detail
               label="Start Time"
@@ -186,7 +186,7 @@ export default function RequestFileClient({ rawData }: { rawData: string[][] }) 
                 </div>
 
                 <AlertDialogFooter className="mt-4 flex justify-between">
-                  <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+                  <AlertDialogCancel className="cursor-pointer  border-2 px-2 rounded-md">Cancel</AlertDialogCancel>
                   <Button
                     variant="destructive"
                     onClick={() => handleAction("Rejected")}

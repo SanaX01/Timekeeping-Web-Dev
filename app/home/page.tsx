@@ -29,9 +29,18 @@ export default async function Home() {
 
   const data: string[][] = await res.json();
 
-  // Filter the data for the current user's email
-  const userRecords = data
-    .filter((row) => row[1] === user?.email)
+  const today = new Date();
+  const todayString = today.toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  // Example: "Monday, 28 July 2025"
+
+  // Filter to only today's records
+  const todayRecords = data
+    .filter((row) => row[1] === user?.email && row[2] === todayString)
     .map((row) => ({
       id: row[0],
       email: row[1],
@@ -41,10 +50,10 @@ export default async function Home() {
       dateTime: new Date(`${row[2]} ${row[3]}`),
     }));
 
-  const latestRecord = userRecords.sort((a, b) => b.dateTime.getTime() - a.dateTime.getTime())[0];
+  const latestRecord = todayRecords.sort((a, b) => b.dateTime.getTime() - a.dateTime.getTime())[0];
 
   const latestTimeIn = latestRecord?.timeIn ?? null;
-  console.log("latestTimeIn ==> ", latestTimeIn);
+
   return (
     <main className="w-full container flex flex-col mx-auto justify-center text-foreground my-24">
       <Statistics />
