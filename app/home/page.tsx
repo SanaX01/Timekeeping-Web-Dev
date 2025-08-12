@@ -29,29 +29,25 @@ export default async function Home() {
 
   const data: string[][] = await res.json();
 
-  const today = new Date();
-  const todayString = today.toLocaleDateString("en-US", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  // Example: "Monday, 28 July 2025"
+  // Force YYYY-MM-DD format for both sides
+  const todayISO = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Manila" }); // 2025-08-12
 
-  // Filter to only today's records
+  // Filter today's records
   const todayRecords = data
-    .filter((row) => row[1] === user?.email && row[2] === todayString)
+    .filter((row) => {
+      const rowDateISO = new Date(row[2]).toLocaleDateString("en-CA", { timeZone: "Asia/Manila" });
+      return row[1] === user?.email && rowDateISO === todayISO;
+    })
     .map((row) => ({
       id: row[0],
       email: row[1],
       date: row[2],
       timeIn: row[3],
-      timeOut: row[4],
+      timeOut: row[4] || null,
       dateTime: new Date(`${row[2]} ${row[3]}`),
     }));
 
   const latestRecord = todayRecords.sort((a, b) => b.dateTime.getTime() - a.dateTime.getTime())[0];
-
   const latestTimeIn = latestRecord?.timeIn ?? null;
 
   return (
