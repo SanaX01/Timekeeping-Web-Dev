@@ -53,7 +53,10 @@ export default async function Home() {
   return (
     <main className="w-full container flex flex-col mx-auto justify-center text-foreground my-24">
       <Statistics />
-      <Welcome />
+      <Welcome
+        disablebutton={latestTimeIn != null ? true : false}
+        user={user || ""}
+      />
       {latestTimeIn === null ? (
         <div className="text-center w-full text-2xl mb-5 font-semibold">You didn't time in yet</div>
       ) : (
