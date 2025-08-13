@@ -311,7 +311,7 @@ export const allowedUsers = {
   "lost.robin@auroramy.com": "AHNV01185",
   "erikson.cruz@auroramy.com": "AHNV00481",
   "shadow.spectre@auroramy.com": "AHNV01346",
-  "aaron.prellegera@auroramy.com": "AHNV01465",
+  "aaron.prellegera@auroramy.com": "AHNV00659",
   "json.ray@auroramy.com": "AHNV01793",
 } as const;
 

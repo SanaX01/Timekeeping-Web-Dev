@@ -15,6 +15,7 @@ export default async function Home() {
   if (!session) return null;
 
   const leaveData = await getLeaveBalanceByEmail(user?.email as string);
+  console.log("leaveData ==> ", leaveData);
 
   const res = await fetch(`${config.BASE_URI}/api/sheet-data`, {
     headers: {
@@ -53,6 +54,7 @@ export default async function Home() {
   return (
     <main className="w-full container flex flex-col mx-auto justify-center text-foreground my-24">
       <Statistics />
+
       <Welcome
         disablebutton={latestTimeIn != null ? true : false}
         user={user || ""}
@@ -66,9 +68,8 @@ export default async function Home() {
       )}
 
       <Clock />
-
+      <LeaveBalance leaveData={leaveData} />
       {/* {user?.role !== "admin" && <LeaveBalance leaveData={leaveData} />} */}
-      {/* <LeaveBalance leaveData={leaveData} /> */}
     </main>
   );
 }

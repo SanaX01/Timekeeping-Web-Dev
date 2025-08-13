@@ -31,5 +31,5 @@ export default function Clock() {
     <Skeleton className="h-full w-[431px] rounded-full" />
   );
 
-  return <div className="h-[20px] w-full flex justify-center items-center">{content}</div>;
+  return <div className="h-[20px] w-full flex justify-center items-center  mb-5">{content}</div>;
 }
