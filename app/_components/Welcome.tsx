@@ -61,7 +61,7 @@ export default function Welcome({ disablebutton, user }: { disablebutton?: boole
   const isTimeInDisabled = disablebutton || loading === "time-in" || isPending;
 
   return (
-    <div className="gap-y-10 h-[500px] flex flex-col items-center justify-center w-full">
+    <div className="gap-y-10 h-[465px] flex flex-col items-center justify-center w-full">
       <div className="h-[48px] flex justify-center items-end w-full">
         {welcomeName === "" ? (
           <Skeleton className="h-[20px] w-[650px] rounded-full" />
