@@ -15,7 +15,6 @@ export default async function Home() {
   if (!session) return null;
 
   const leaveData = await getLeaveBalanceByEmail(user?.email as string);
-  console.log("leaveData ==> ", leaveData);
 
   const res = await fetch(`${config.BASE_URI}/api/sheet-data`, {
     headers: {

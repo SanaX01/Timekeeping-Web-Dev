@@ -27,7 +27,7 @@ export default function FilteredRequestList({ requests }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Request Overtime</h1>
+        <h1 className="text-3xl font-bold">Requests Forms</h1>
         <div className="flex items-center space-x-4">
           <p>Filter by status</p>
           <Select

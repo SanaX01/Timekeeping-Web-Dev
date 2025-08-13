@@ -22,14 +22,11 @@ import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { submitRequest } from "@/app/actions/submit-request";
 
-
-
-
 export default function EveryForm() {
   const { data: session } = useSession();
   const [formType, setFormType] = useState<"OT" | "VL" | "SL" | null>(null);
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [startTime, setStartTime] = useState("09:00");
+  const [startTime, setStartTime] = useState("18:00");
   const [open, setOpen] = useState(false);
   const [endTime, setEndTime] = useState("");
   const [reason, setReason] = useState("");
